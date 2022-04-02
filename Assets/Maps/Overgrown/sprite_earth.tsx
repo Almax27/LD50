@@ -7,13 +7,15 @@
   </objectgroup>
  </tile>
  <tile id="1">
-  <objectgroup draworder="index">
-   <object id="0" x="0" y="0" width="16" height="16"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="0" y="3.90909" width="16" height="12.0909"/>
   </objectgroup>
  </tile>
  <tile id="2">
-  <objectgroup draworder="index">
-   <object id="0" x="0" y="0" width="16" height="16"/>
+  <objectgroup draworder="index" id="2">
+   <object id="2" x="0.272727" y="0.0909091">
+    <polygon points="-0.272727,-0.0909091 15.7273,15.9091 -0.272727,15.9091"/>
+   </object>
   </objectgroup>
  </tile>
  <tile id="3">
