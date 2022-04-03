@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
 
     PlayerController currentPlayer;
 
+    public MusicSetup gameMusic;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +23,11 @@ public class GameManager : MonoBehaviour
         if(followCamera)
         {
             followCamera.target = playerGO.transform;
+        }
+
+        if(gameMusic != null)
+        {
+            FAFAudio.Instance.TryPlayMusic(gameMusic);
         }
     }
 
