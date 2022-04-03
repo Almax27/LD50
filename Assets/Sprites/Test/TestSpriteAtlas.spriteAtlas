@@ -98,5 +98,5 @@ SpriteAtlas:
   - Test.Sprites._10
   - Test.Sprites._11
   m_RenderDataMap: {}
-  m_Tag: SpriteAtlas
+  m_Tag: TestSpriteAtlas
   m_IsVariant: 0
