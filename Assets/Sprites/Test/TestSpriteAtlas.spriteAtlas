@@ -73,6 +73,7 @@ SpriteAtlas:
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: -7216408756108040743, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
+  - {fileID: -8914051359693319283, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
   - {fileID: 2784315252911590076, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
   - {fileID: 1099484096758924812, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
   - {fileID: -7044881820040546790, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
@@ -83,9 +84,9 @@ SpriteAtlas:
   - {fileID: -4641916886576287048, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
   - {fileID: 3538208852078739327, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
   - {fileID: 554736078238269841, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
-  - {fileID: -8914051359693319283, guid: 45d4493f62035fb4aa556273b9e0850d, type: 3}
   m_PackedSpriteNamesToIndex:
   - Test.Sprites._0
+  - Test.Sprites._11
   - Test.Sprites._1
   - Test.Sprites._2
   - Test.Sprites._3
@@ -96,7 +97,6 @@ SpriteAtlas:
   - Test.Sprites._8
   - Test.Sprites._9
   - Test.Sprites._10
-  - Test.Sprites._11
   m_RenderDataMap: {}
   m_Tag: TestSpriteAtlas
   m_IsVariant: 0
