@@ -149,7 +149,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 1
-  size: {x: 0.6, y: 0.1}
+  size: {x: 0.6, y: 0.2}
 --- !u!1 &7020762558923366422
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,6 +208,10 @@ MonoBehaviour:
   allowMoveToCancelClimb: 0
   groundedPhysicsMaterial: {fileID: 6200000, guid: 645178ab8f700d34eb3451c648d8b436, type: 2}
   airPhysicsMaterial: {fileID: 6200000, guid: cb1220d668d0a4343a80076c4a46c6c7, type: 2}
+  footstepInterval: 2
+  footStepAudio: {fileID: 11400000, guid: 7095dac937fbf4c4f9dfdc524ce3a39f, type: 2}
+  jumpAudio: {fileID: 11400000, guid: eb78611996b4f2c40ae5c5b4e282257e, type: 2}
+  landAudio: {fileID: 11400000, guid: 258c70e2aa448bd40bead4305d9712a1, type: 2}
   gravity: 120
   jumpCurve:
     serializedVersion: 2

@@ -33,6 +33,10 @@ public class PlayerController : MonoBehaviour
     public bool allowMoveToCancelClimb = false;
     public PhysicsMaterial2D groundedPhysicsMaterial;
     public PhysicsMaterial2D airPhysicsMaterial;
+    public float footstepInterval = 0.5f;
+    public FAFAudioSFXSetup footStepAudio;
+    public FAFAudioSFXSetup jumpAudio;
+    public FAFAudioSFXSetup landAudio;
 
     [Header("Jumping")]
     public float gravity = 1;
@@ -69,7 +73,9 @@ public class PlayerController : MonoBehaviour
     Animation bodyAnim;
     Animator animator;
     new Rigidbody2D rigidbody2D;
-    CapsuleCollider2D capsuleCollider2D; 
+    CapsuleCollider2D capsuleCollider2D;
+
+    float footstepDistTraveled = 0;
 
     int jumpsRemaining = 0;
     int maxJumps = 1;
@@ -92,7 +98,8 @@ public class PlayerController : MonoBehaviour
     float lastClimbTime = 0;
     float lastDamageTime = 0;
 
-    Vector2 velocity = Vector2.zero;
+    Vector2 lastPosition;
+    Vector2 desiredVelocity;
     float accelerationX = 0;
 
     void Start()
@@ -121,7 +128,7 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("onAttack");
             lastAttackTime = Time.time;
             pendingAttackDamage = true;
-            velocity.x = isLookingRight ? 10 : -10;
+            desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, 10) : Mathf.Min(desiredVelocity.x, -10), desiredVelocity.y);
             if (attackSounds.Length > 0 && attackComboIndex < attackSounds.Length)
             {
                 FAFAudio.Instance.PlayOnce2D(attackSounds[attackComboIndex], transform.position);
@@ -130,10 +137,10 @@ public class PlayerController : MonoBehaviour
 
         HandleAttacking();
 
-        bool isMoving = Mathf.Abs(velocity.x) > idleSpeed || Mathf.Abs(xInput) > 0;
+        bool isMoving = Mathf.Abs(rigidbody2D.velocity.x) > idleSpeed;
 
-        animator.SetFloat("moveSpeed", isMoving ? Mathf.Abs(velocity.x / groundSpeed) : 0);
-        animator.SetFloat("velocityY", velocity.y);
+        animator.SetFloat("moveSpeed", isMoving ? Mathf.Abs(rigidbody2D.velocity.x / groundSpeed) : 0);
+        animator.SetFloat("velocityY", desiredVelocity.y);
         animator.SetBool("isIdle", !isMoving && !isAttacking);
         animator.SetBool("isAttacking", isAttacking);
         animator.SetBool("isSleeping", isSleeping);
@@ -141,17 +148,22 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        var isGrounded = grounder ? grounder.isGrounded && velocity.y <= 0 : false;
-        var isClimbGrounded = climbGrounder ? climbGrounder.isGrounded && velocity.y <= 0 : false;
+        var isGrounded = grounder ? grounder.isGrounded : false;
+        var isClimbGrounded = climbGrounder ? climbGrounder.isGrounded : false;
 
         //apply gravity
         if (isGrounded)
         {
-            velocity.y = 0;
+            desiredVelocity.y = 0;
         }
         if (!isClimbing && !isJumping)
         {
-            velocity.y -= gravity * Time.fixedDeltaTime;
+            float gravityMultipler = 1.0f;
+            if(pendingAttackDamage && attackComboIndex == 0)
+            {
+                gravityMultipler = 0;
+            }
+            desiredVelocity.y -= gravity * Time.fixedDeltaTime * gravityMultipler;
         }
 
         capsuleCollider2D.sharedMaterial = isGrounded ? groundedPhysicsMaterial : airPhysicsMaterial;
@@ -171,8 +183,23 @@ public class PlayerController : MonoBehaviour
 
         //move rigidbody
         rigidbody2D.isKinematic = isClimbing;
-        Vector3 newPosition = transform.position + new Vector3(velocity.x, velocity.y, 0) * Time.fixedDeltaTime;
-        rigidbody2D.MovePosition(newPosition);
+
+        if (isGrounded)
+        {
+            footstepDistTraveled += Mathf.Abs(rigidbody2D.position.x - lastPosition.x);
+            if (footstepDistTraveled > footstepInterval)
+            {
+                footstepDistTraveled -= footstepInterval;
+                footStepAudio.Play(transform.position);
+            }
+        }
+        else
+        {
+            footstepDistTraveled = 0;
+        }
+
+        lastPosition = rigidbody2D.position;
+        rigidbody2D.velocity = desiredVelocity;
     }
 
     bool CanAttack()
@@ -243,7 +270,7 @@ public class PlayerController : MonoBehaviour
         if (isClimbing)
         {
             //move climbing
-            velocity.y = yInput * climbingSpeed;
+            desiredVelocity.y = yInput * climbingSpeed;
 
             //snap to ladder
             var pos = transform.position;
@@ -255,7 +282,7 @@ public class PlayerController : MonoBehaviour
         }
         if (wasClimbing != isClimbing)
         {
-            velocity.y = 0;
+            desiredVelocity.y = 0;
         }
     }
 
@@ -267,7 +294,7 @@ public class PlayerController : MonoBehaviour
     void HandleJumping(bool isGrounded)
     {
         //Reset jump
-        if (isGrounded || isClimbing)
+        if (!wantsJump && (isGrounded || isClimbing))
         {
             jumpsRemaining = maxJumps;
             if(isJumping)
@@ -290,7 +317,7 @@ public class PlayerController : MonoBehaviour
             {
                 print("Jump Ended");
                 isJumping = false;
-                velocity.y = 0; //enforce jump height
+                desiredVelocity.y = 0; //enforce jump height
             }
         }
 
@@ -312,7 +339,7 @@ public class PlayerController : MonoBehaviour
             float lastJumpTick = jumpTick;
             jumpTick = Mathf.Clamp(jumpTick + Time.fixedDeltaTime, 0, maxJumpTime);
             float deltaY = (jumpCurve.Evaluate(jumpTick / maxJumpTime) - jumpCurve.Evaluate(lastJumpTick / maxJumpTime)) * jumpHeight;
-            velocity.y = deltaY / Time.fixedDeltaTime;
+            desiredVelocity.y = deltaY / Time.fixedDeltaTime;
         }
     }
 
@@ -329,29 +356,29 @@ public class PlayerController : MonoBehaviour
         {
             hasMovedInAir = false;
         }
-        
+
         if (CanMove())
         {
             float desiredSpeed = groundSpeed;
             //use air speed when changing direction in the air
-            if (!isGrounded && (hasMovedInAir || Mathf.Sign(velocity.x) != Mathf.Sign(xInput)))
+            if (!isGrounded && (hasMovedInAir || Mathf.Sign(desiredVelocity.x) != Mathf.Sign(xInput)))
             {
                 desiredSpeed = airSpeed;
                 hasMovedInAir = true;
             }
             if (xInput != 0)
             {
-                velocity.x = Mathf.SmoothDamp(velocity.x, xInput * desiredSpeed, ref accelerationX, 0.2f, float.MaxValue, Time.fixedDeltaTime);
+                desiredVelocity.x = Mathf.SmoothDamp(desiredVelocity.x, xInput * desiredSpeed, ref accelerationX, 0.2f, float.MaxValue, Time.fixedDeltaTime);
             }
             else
             {
-                velocity.x = Mathf.SmoothDamp(velocity.x, 0, ref accelerationX, 0.15f, float.MaxValue, Time.fixedDeltaTime);
+                desiredVelocity.x = Mathf.SmoothDamp(desiredVelocity.x, 0, ref accelerationX, 0.15f, float.MaxValue, Time.fixedDeltaTime);
             }
         }
         else
         {
             xInput = 0;
-            velocity.x = Mathf.SmoothDamp(velocity.x, 0, ref accelerationX, isAttacking ? 0.2f : 0.05f, float.MaxValue, Time.fixedDeltaTime);
+            desiredVelocity.x = Mathf.SmoothDamp(desiredVelocity.x, 0, ref accelerationX, isAttacking ? 0.2f : 0.05f, float.MaxValue, Time.fixedDeltaTime);
         }
     }
 
@@ -389,6 +416,15 @@ public class PlayerController : MonoBehaviour
                 gobj.transform.position = transform.position;
             }
         }
+
+        jumpAudio?.Play(transform.position);
+    }
+
+    void OnGrounded()
+    {
+        landAudio?.Play(transform.position);
+        desiredVelocity.y = 0;
+        rigidbody2D.velocity = desiredVelocity;
     }
 
     public virtual void OnDamage(Damage damage)

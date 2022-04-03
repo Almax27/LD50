@@ -21,7 +21,7 @@ public class FAFAudioSFXSetup : ScriptableObject {
         {
             float volume = (Volume  * _volumeScalar) + Random.Range(-VolumeVariance, VolumeVariance);
             float pitch = (Pitch * _pitchScalar) + _pitchOffset + Random.Range(-PitchVariance, PitchVariance);
-            source = FAFAudio.Instance.Play(Clips[Random.Range(0, Clips.Count - 1)], _pos, volume, pitch, MixerGroup);
+            source = FAFAudio.Instance.Play(Clips[Random.Range(0, Clips.Count)], _pos, volume, pitch, MixerGroup);
             if(source)
             {
                 source.spatialBlend = SpatialBlend;

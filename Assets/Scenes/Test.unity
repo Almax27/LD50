@@ -136,6 +136,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8531364397926255181, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: gameMusic.clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 93736961ebfd9ca40b6a6cf2a28520c7, type: 3}
+    - target: {fileID: -8531364397926255181, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: gameMusic.volume
+      value: 0.358
+      objectReference: {fileID: 0}
+    - target: {fileID: -8531364397926255181, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: playerSpawnPoint
       value: 
       objectReference: {fileID: 956748372}
