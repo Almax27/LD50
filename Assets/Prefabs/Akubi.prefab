@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4601160073767848968}
   - component: {fileID: 6216912275520194729}
+  - component: {fileID: 8616726762111863332}
   m_Layer: 3
-  m_Name: BodySprite
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3516238175307373006}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.848, y: 0.327, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3837244067766469713}
@@ -71,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 38a3826ca0b1d3743afb92bd67c7bcc2, type: 3}
+  m_Sprite: {fileID: 1713546961119873806, guid: 141c40d05cdb3aa418f6a2b36b2c12b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -82,6 +83,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &8616726762111863332
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3516238175307373006}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 268279acba2c79b4d8061607b6f47dd5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5454059753344965368
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,11 +160,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3837244067766469713}
   - component: {fileID: 3266665632560690862}
-  - component: {fileID: 7211747087474885753}
   - component: {fileID: 7343713825006861650}
   - component: {fileID: 9061667629039961856}
   m_Layer: 3
-  m_Name: PlayerSamurai
+  m_Name: Akubi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -159,7 +178,7 @@ Transform:
   m_GameObject: {fileID: 7020762558923366422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4601160073767848968}
   - {fileID: 6644258560276794022}
@@ -179,17 +198,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 6216912275520194729}
-  legs: {fileID: 0}
   grounder: {fileID: 1877360471677491877}
   climber: {fileID: 0}
   climbGrounder: {fileID: 0}
-  groundSpeed: 2
-  airSpeed: 0.5
+  groundSpeed: 12
+  airSpeed: 6
+  idleSpeed: 5
   climbingSpeed: 0.2
   allowMoveToCancelClimb: 0
   groundedPhysicsMaterial: {fileID: 6200000, guid: 645178ab8f700d34eb3451c648d8b436, type: 2}
   airPhysicsMaterial: {fileID: 6200000, guid: cb1220d668d0a4343a80076c4a46c6c7, type: 2}
-  gravity: 20
+  gravity: 120
   jumpCurve:
     serializedVersion: 2
     m_Curve:
@@ -214,37 +233,32 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  jumpHeight: 0.5
+  jumpHeight: 3
   minJumpTime: 0.3
   maxJumpTime: 0.3
   spawnOnJump: []
   climbExitTime: 0.2
+  runningAnim: {fileID: 0}
+  meleeAttackAnims:
+  - damageDelay: 0
+    animStateName: 
+    anim: {fileID: 0}
+  - damageDelay: 0
+    animStateName: 
+    anim: {fileID: 0}
+  - damageDelay: 0
+    animStateName: 
+    anim: {fileID: 0}
+  attackSounds:
+  - {fileID: 8300000, guid: 5587f28abf2ba5b46adb699429f2c6cb, type: 3}
+  - {fileID: 8300000, guid: a5aebb6d195c86a4b80656a7471f9a66, type: 3}
+  - {fileID: 8300000, guid: 43794c2999d850348a3bd92f542cab02, type: 3}
   rootOnDamageTime: 0.2
-  canMove: 1
-  canLook: 1
-  canJump: 1
+  isSleeping: 0
+  pressesToWakeUp: 10
   isMovingRight: 1
   isLookingRight: 1
   isClimbing: 0
---- !u!95 &7211747087474885753
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7020762558923366422}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!50 &7343713825006861650
 Rigidbody2D:
   serializedVersion: 4
