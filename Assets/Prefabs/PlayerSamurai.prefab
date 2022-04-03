@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4601160073767848968}
   - component: {fileID: 6216912275520194729}
-  m_Layer: 0
-  m_Name: Capsule
+  m_Layer: 3
+  m_Name: BodySprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6644258560276794022}
   - component: {fileID: 1877360471677491877}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Grounder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,8 +128,8 @@ MonoBehaviour:
   isGrounded: 0
   groundMask:
     serializedVersion: 2
-    m_Bits: 0
-  size: {x: 1, y: 0.1}
+    m_Bits: 1
+  size: {x: 0.6, y: 0.1}
 --- !u!1 &7020762558923366422
 GameObject:
   m_ObjectHideFlags: 0
@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 7211747087474885753}
   - component: {fileID: 7343713825006861650}
   - component: {fileID: 9061667629039961856}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PlayerSamurai
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ Transform:
   m_GameObject: {fileID: 7020762558923366422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children:
   - {fileID: 4601160073767848968}
   - {fileID: 6644258560276794022}
@@ -183,21 +183,43 @@ MonoBehaviour:
   grounder: {fileID: 1877360471677491877}
   climber: {fileID: 0}
   climbGrounder: {fileID: 0}
-  gravity: 1
+  groundSpeed: 2
+  airSpeed: 0.5
+  climbingSpeed: 0.2
+  allowMoveToCancelClimb: 0
+  groundedPhysicsMaterial: {fileID: 6200000, guid: 645178ab8f700d34eb3451c648d8b436, type: 2}
+  airPhysicsMaterial: {fileID: 6200000, guid: cb1220d668d0a4343a80076c4a46c6c7, type: 2}
+  gravity: 20
   jumpCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  jumpHeight: 1
-  groundSpeed: 0.3
-  airSpeed: 0.1
-  climbingSpeed: 0.2
-  allowMoveToCancelClimb: 0
+  jumpHeight: 0.5
+  minJumpTime: 0.3
+  maxJumpTime: 0.3
+  spawnOnJump: []
   climbExitTime: 0.2
   rootOnDamageTime: 0.2
-  spawnOnJump: []
   canMove: 1
   canLook: 1
   canJump: 1
@@ -238,12 +260,12 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!70 &9061667629039961856
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

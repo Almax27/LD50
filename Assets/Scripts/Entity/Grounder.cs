@@ -13,7 +13,7 @@ public class Grounder : MonoBehaviour {
         Vector2 pos2D = new Vector2(transform.position.x, transform.position.y);
         Vector3 wScale = transform.lossyScale;
         var ground = Physics2D.OverlapArea(pos2D - (size*0.5f) * wScale.x, pos2D + (size*0.5f) * wScale.y, groundMask);
-        isGrounded = ground != null;
+        isGrounded = ground != null && ground.gameObject != gameObject;
     }
 
     void OnDrawGizmos()

@@ -10,17 +10,27 @@ public class PlayerController : MonoBehaviour
     public Climber climber;
     public Grounder climbGrounder;
 
-    [Header("Config")]
-    public float gravity = 1;
-    public AnimationCurve jumpCurve = new AnimationCurve();
-    public float jumpHeight = 1;
+    [Header("Movement")]
     public float groundSpeed = 0.3f;
     public float airSpeed = 0.1f;
     public float climbingSpeed = 0.2f;
     public bool allowMoveToCancelClimb = false;
-    public float climbExitTime = 0.2f; //time after leaving climbable before can climb again
-    public float rootOnDamageTime = 0.2f;
+    public PhysicsMaterial2D groundedPhysicsMaterial;
+    public PhysicsMaterial2D airPhysicsMaterial;
+
+    [Header("Jumping")]
+    public float gravity = 1;
+    public AnimationCurve jumpCurve = new AnimationCurve();
+    public float jumpHeight = 1;
+    public float minJumpTime = 0.1f;
+    public float maxJumpTime = 0.3f;
     public GameObject[] spawnOnJump = new GameObject[0];
+
+    [Header("Climbing")]
+    public float climbExitTime = 0.2f; //time after leaving climbable before can climb again
+
+    [Header("Damage")]
+    public float rootOnDamageTime = 0.2f;
 
     [Header("State")]
     public bool canMove = true;
@@ -32,15 +42,17 @@ public class PlayerController : MonoBehaviour
 
     Animator animator;
     new Rigidbody2D rigidbody2D;
+    new CapsuleCollider2D capsuleCollider2D; 
 
     int jumpsRemaining = 0;
     int maxJumps = 1;
-    bool hasJumped = false;
+    bool isJumping = false;
     float jumpTick = 0;
 
     bool hasMovedInAir = false;
 
-    bool tryJump = false;
+    bool wantsJump = false;
+    bool jumpPendingRelease = false;
     float xInputRaw = 0;
     float xInput = 0;
     float xInputVel = 0;
@@ -55,6 +67,7 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigidbody2D = GetComponent<Rigidbody2D>();
+        capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         jumpsRemaining = maxJumps;
     }
 
@@ -64,10 +77,11 @@ public class PlayerController : MonoBehaviour
         xInputRaw = Input.GetAxisRaw("Horizontal");
         xInput = Mathf.SmoothDamp(xInput, xInputRaw, ref xInputVel, 0.1f, float.MaxValue, Time.deltaTime);
         yInput = Input.GetAxis("Vertical");
-        tryJump = tryJump || Input.GetButtonDown("Jump");
+        wantsJump = Input.GetButton("Jump");
+        if (jumpPendingRelease && !wantsJump) jumpPendingRelease = false;
 
         //update animator
-        if (animator && animator.runtimeAnimatorController)
+            if (animator && animator.runtimeAnimatorController)
         {
             animator.SetFloat("moveSpeed", Mathf.Abs(xInput));
             animator.SetFloat("climbSpeed", Mathf.Abs(yInput));
@@ -84,10 +98,12 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y = 0;
         }
-        if (!isClimbing)
+        if (!isClimbing && !isJumping)
         {
             velocity.y -= gravity * Time.fixedDeltaTime;
         }
+
+        capsuleCollider2D.sharedMaterial = isGrounded ? groundedPhysicsMaterial : airPhysicsMaterial;
 
         HandleClimbing(isGrounded, isClimbGrounded);
         HandleJumping(isGrounded);
@@ -124,7 +140,7 @@ public class PlayerController : MonoBehaviour
             isClimbing = false;
         }
         //handle jump exit case
-        else if (xInputRaw != 0 && tryJump)
+        else if (xInputRaw != 0 && wantsJump)
         {
             isClimbing = false;
         }
@@ -150,7 +166,7 @@ public class PlayerController : MonoBehaviour
             transform.position = pos;
 
             canMove = false;
-            tryJump = false;
+            wantsJump = false;
             lastClimbTime = Time.time;
         }
         if (wasClimbing != isClimbing)
@@ -161,29 +177,54 @@ public class PlayerController : MonoBehaviour
 
     void HandleJumping(bool isGrounded)
     {
+        //Reset jump
         if (isGrounded || isClimbing)
         {
             jumpsRemaining = maxJumps;
-            hasJumped = false;
-        }
-        if (canJump && tryJump && jumpsRemaining > 0)
-        {
-            jumpTick = 0;
-            hasJumped = true;
-            jumpsRemaining--;
-            OnJump();
-        }
-        if (hasJumped)
-        {
-            float lastJumpTick = jumpTick;
-            jumpTick += Time.fixedDeltaTime;
-            float deltaY = (jumpCurve.Evaluate(jumpTick) - jumpCurve.Evaluate(lastJumpTick)) * jumpHeight;
-            if (deltaY != 0)
+            if(isJumping)
             {
-                velocity.y = deltaY / Time.fixedDeltaTime;
+                print("Jump Reset");
+                isJumping = false;
             }
         }
-        tryJump = false;
+
+        if (isJumping)
+        {
+            //Cancel jump
+            if (!wantsJump && jumpTick >= minJumpTime)
+            {
+                print("Jump Canceled");
+                isJumping = false;
+            }
+            //End jump
+            if (jumpTick >= maxJumpTime)
+            {
+                print("Jump Ended");
+                isJumping = false;
+                velocity.y = 0; //enforce jump height
+            }
+        }
+
+        //Start jump
+        if (canJump && !isJumping && wantsJump && !jumpPendingRelease && jumpsRemaining > 0)
+        {
+            print("Jump Started");
+            jumpTick = 0;
+            isJumping = true;
+            jumpsRemaining--;
+            jumpPendingRelease = true; //latch the input
+            OnJump();
+        }
+        
+        //Process jump
+        if (isJumping)
+        {
+            print("Jumping...");
+            float lastJumpTick = jumpTick;
+            jumpTick = Mathf.Clamp(jumpTick + Time.fixedDeltaTime, 0, maxJumpTime);
+            float deltaY = (jumpCurve.Evaluate(jumpTick / maxJumpTime) - jumpCurve.Evaluate(lastJumpTick / maxJumpTime)) * jumpHeight;
+            velocity.y = deltaY / Time.fixedDeltaTime;
+        }
     }
 
     void HandleMovement(bool isGrounded)
