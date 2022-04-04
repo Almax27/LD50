@@ -8,17 +8,32 @@ public class Grounder : MonoBehaviour {
 
     public Vector2 size = Vector2.one;
 
+    float groundedTick = 0.0f;
+
     void FixedUpdate()
     {
         Vector2 pos2D = new Vector2(transform.position.x, transform.position.y);
         Vector3 wScale = transform.lossyScale;
         var ground = Physics2D.OverlapArea(pos2D - (size*0.5f) * wScale.x, pos2D + (size*0.5f) * wScale.y, groundMask);
         bool wasGrounded = isGrounded;
-        isGrounded = ground != null && ground.gameObject != gameObject;
-        if (!wasGrounded && isGrounded)
+        bool newGrounded = ground != null && ground.gameObject != gameObject;
+        if(wasGrounded != newGrounded)
         {
-            SendMessageUpwards("OnGrounded", SendMessageOptions.DontRequireReceiver);
-        }
+            if (newGrounded)
+            {
+                groundedTick = 0;
+                isGrounded = newGrounded;
+                SendMessageUpwards("OnGrounded", SendMessageOptions.DontRequireReceiver);
+            }
+            else
+            {
+                groundedTick += Time.fixedDeltaTime;
+                if(groundedTick > 0.1f) //grace period
+                {
+                    isGrounded = newGrounded; //left the ground
+                }
+            }
+        }        
     }
 
     public RaycastHit2D GetGroundHit()

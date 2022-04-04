@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3516238175307373006}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.848, y: 0.327, z: 0}
+  m_LocalPosition: {x: 0.848, y: 0.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3837244067766469713}
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 2763174295139914133, guid: 141c40d05cdb3aa418f6a2b36b2c12b6, type: 3}
+  m_Sprite: {fileID: -4219545246097862275, guid: 141c40d05cdb3aa418f6a2b36b2c12b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -295,19 +295,19 @@ MonoBehaviour:
   meleeAttacks:
   - damage: 1
     damageDelay: 0.2
-    playerSpeedX: 10
-    knockback: {x: 3, y: 3}
+    playerSpeedX: 5
+    knockback: {x: 5, y: 3}
     attackSound: {fileID: 11400000, guid: fa00dda6c8f25c34a928b09d524cd003, type: 2}
     hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
   - damage: 1
     damageDelay: 0.2
-    playerSpeedX: 10
-    knockback: {x: 3, y: 3}
+    playerSpeedX: 15
+    knockback: {x: 1, y: 7}
     attackSound: {fileID: 11400000, guid: 18212870aaefb164e825fd4c2925b179, type: 2}
     hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
   - damage: 2
     damageDelay: 0.2
-    playerSpeedX: 10
+    playerSpeedX: 3
     knockback: {x: 7, y: 5}
     attackSound: {fileID: 11400000, guid: f11fe43e73ba2b14ea67c5cf4be0e10c, type: 2}
     hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}

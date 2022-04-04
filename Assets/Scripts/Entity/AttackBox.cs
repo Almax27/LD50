@@ -42,6 +42,22 @@ public class AttackBox : MonoBehaviour
     {
         StartCoroutine(DealDamage_Routine(damage, delay));
     }
+
+    public bool IsTargetInRange()
+    {
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, size, 0, layerMask);
+        if (colliders != null)
+        {
+            foreach (var collider in colliders)
+            {
+                if (collider.gameObject == gameObject || collider.gameObject == transform.root.gameObject)
+                    continue;
+
+                return true;
+            }
+        }
+        return false;
+    }
    
 
     private void OnDrawGizmos()

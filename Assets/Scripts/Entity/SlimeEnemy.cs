@@ -36,7 +36,7 @@ public class SlimeEnemy : EnemyController
 
         if(nextJumpTime > 0 && Time.time > nextJumpTime)
         {
-            print("AttemptJump");
+            //print("AttemptJump");
 
             nextJumpTime = 0;
             animator.SetTrigger("onJump");
@@ -52,13 +52,13 @@ public class SlimeEnemy : EnemyController
     //called by PreJump Animation State Behaviour
     void OnPreJumpExit()
     {
-        print("OnPreJumpExit");
+       // print("OnPreJumpExit");
         pendingJump = true;
     }
 
     void OnGrounded()
     {
-        print("Grounded");
+        //print("Grounded");
         nextJumpTime = Time.time + Random.Range(3, 5);
     }
 

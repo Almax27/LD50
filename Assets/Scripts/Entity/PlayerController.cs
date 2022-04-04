@@ -158,12 +158,16 @@ public class PlayerController : MonoBehaviour
             if (xInputRaw != 0) isLookingRight = xInputRaw > 0;
 
             var currentAttack = GetCurrentAttack();
-            if (currentAttack != null)
+            if (meleeAttackBox && currentAttack != null)
             {
-                desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, currentAttack.playerSpeedX) : Mathf.Min(desiredVelocity.x, -currentAttack.playerSpeedX), desiredVelocity.y);
+                if (meleeAttackBox)
+                {
+                    float attackMoveSpeed = currentAttack.playerSpeedX * (meleeAttackBox.IsTargetInRange() ? 0.5f : 1.0f);
+                    desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, attackMoveSpeed) : Mathf.Min(desiredVelocity.x, -attackMoveSpeed), desiredVelocity.y);
+                }
 
                 currentAttack.attackSound?.Play(transform.position);
-                meleeAttackBox?.DealDamage(new Damage(currentAttack.damage, gameObject, currentAttack.hitSound, currentAttack.knockback), currentAttack.damageDelay);
+                meleeAttackBox.DealDamage(new Damage(currentAttack.damage, gameObject, currentAttack.hitSound, currentAttack.knockback), currentAttack.damageDelay);
             }
         }
 
@@ -186,7 +190,7 @@ public class PlayerController : MonoBehaviour
         //apply gravity
         if (isGrounded)
         {
-            //desiredVelocity.y = 0;
+            desiredVelocity.y = 0;
         }
         else if (!isClimbing && !isJumping)
         {
@@ -568,10 +572,15 @@ public class PlayerController : MonoBehaviour
     {
         foreach(var contact in collision.contacts)
         {
-            if(Vector2.Dot(contact.normal, Vector2.up) < 0)
+            float angle = Vector2.Angle(contact.normal, Vector2.up);
+            if (angle < 90) //we hit our head on something :(
             {
                 isJumping = false;
-                desiredVelocity.y = 0; //we hit our head on something :(
+                desiredVelocity.y = 0;
+            }
+            else if(angle > 60)
+            {
+                desiredVelocity.y = 0;
             }
         }
     }
