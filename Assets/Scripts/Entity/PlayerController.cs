@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviour
     public int pressesToWakeUp = 10;
     bool canRecoverFromSleeping = false;
     int wakePresses = 0;
+    float sleepTimer = 0;
 
     [Header("State")]
     public bool isMovingRight = true;
