@@ -16,7 +16,7 @@ public class Grounder : MonoBehaviour {
         Vector3 wScale = transform.lossyScale;
         var ground = Physics2D.OverlapArea(pos2D - (size*0.5f) * wScale.x, pos2D + (size*0.5f) * wScale.y, groundMask);
         bool wasGrounded = isGrounded;
-        bool newGrounded = ground != null && ground.gameObject != gameObject;
+        bool newGrounded = ground != null && !ground.isTrigger && ground.gameObject != gameObject;
         if(wasGrounded != newGrounded)
         {
             if (newGrounded)

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
@@ -57,7 +58,7 @@ public class GameManager : SingletonBehaviour<GameManager>
         {
             if(currentPlayer.GetComponent<Health>().GetIsDead())
             {
-                currentPlayer.enabled = false;
+                currentPlayer = null;
                 StartCoroutine(GameOver_Routine());
             }
         }
@@ -67,5 +68,6 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         yield return new WaitForSeconds(1.0f);
 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
