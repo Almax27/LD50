@@ -7,7 +7,6 @@ public class FollowCamera : MonoBehaviour {
     public float lookDamp = 0.3f;
     public float followDamp = 0.5f;
     public Vector3 offset = new Vector3(0,2,-10);
-    public Vector2 worldSize = new Vector2(100, 100);
 
     Vector3 followVelocity = Vector3.zero;
     Vector3 desiredPosition = Vector3.zero;
@@ -15,7 +14,6 @@ public class FollowCamera : MonoBehaviour {
     Camera cam = null;
 
     bool snap = true;
-
 
 	// Use this for initialization
 	void Start () 
@@ -61,14 +59,17 @@ public class FollowCamera : MonoBehaviour {
         Vector2 viewSize = new Vector2(cam.orthographicSize * cam.aspect, cam.orthographicSize);
 
         //Clamp from top left
-        pos.x = Mathf.Clamp(pos.x, viewSize.x, worldSize.x - viewSize.x);
-        pos.y = Mathf.Clamp(pos.y, -worldSize.y + viewSize.y, -viewSize.y);
+        Vector2 mapSize = GameManager.Instance.GetMapSize();
+        pos.x = Mathf.Clamp(pos.x, viewSize.x, mapSize.x - viewSize.x);
+        pos.y = Mathf.Clamp(pos.y, -mapSize.y + viewSize.y, -viewSize.y);
         transform.position = pos;
 	}
 
     void OnDrawGizmos()
     {
+        Vector2 mapSize = GameManager.Instance.GetMapSize();
+
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(new Vector2(worldSize.x * 0.5f, -worldSize.y * 0.5f), worldSize);
+        Gizmos.DrawWireCube(new Vector2(mapSize.x * 0.5f, -mapSize.y * 0.5f), mapSize);
     }
 }

@@ -1,11 +1,17 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 
 [System.Serializable]
 public class MeleeAttack
 {
+    public float damage;
     public float damageDelay = 0.3f;
+
+    public float playerSpeedX = 10.0f;
+
+    public Vector2 knockback;
+
     public FAFAudioSFXSetup attackSound;
     public FAFAudioSFXSetup hitSound;
 }
@@ -98,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
     Vector2 lastPosition;
     Vector2 desiredVelocity;
-    float accelerationX = 0;
+    Vector2 acceleration;
 
     float stunnedUntilTime;
 
@@ -149,14 +155,15 @@ public class PlayerController : MonoBehaviour
             lastAttackTime = Time.time;
             pendingAttackDamage = true;
 
-            if(xInputRaw != 0) isLookingRight = xInputRaw > 0;
-            //desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, 10) : Mathf.Min(desiredVelocity.x, -10), desiredVelocity.y);
-            
+            if (xInputRaw != 0) isLookingRight = xInputRaw > 0;
+
             var currentAttack = GetCurrentAttack();
             if (currentAttack != null)
             {
+                desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, currentAttack.playerSpeedX) : Mathf.Min(desiredVelocity.x, -currentAttack.playerSpeedX), desiredVelocity.y);
+
                 currentAttack.attackSound?.Play(transform.position);
-                meleeAttackBox?.DealDamage(new Damage(1, gameObject, currentAttack.hitSound), currentAttack.damageDelay);
+                meleeAttackBox?.DealDamage(new Damage(currentAttack.damage, gameObject, currentAttack.hitSound, currentAttack.knockback), currentAttack.damageDelay);
             }
         }
 
@@ -179,9 +186,9 @@ public class PlayerController : MonoBehaviour
         //apply gravity
         if (isGrounded)
         {
-            desiredVelocity.y = 0;
+            //desiredVelocity.y = 0;
         }
-        if (!isClimbing && !isJumping)
+        else if (!isClimbing && !isJumping)
         {
             float gravityMultipler = 1.0f;
             if(pendingAttackDamage && attackComboIndex == 0 && desiredVelocity.y < 0)
@@ -398,25 +405,50 @@ public class PlayerController : MonoBehaviour
         else if (CanMove())
         {
             float desiredSpeed = groundSpeed;
+
+#if DEBUG
+            if (Input.GetKey(KeyCode.LeftShift)) desiredSpeed *= 3.0f;
+#endif
+
             //use air speed when changing direction in the air
             if (!isGrounded && (hasMovedInAir || Mathf.Sign(desiredVelocity.x) != Mathf.Sign(xInput)))
             {
                 desiredSpeed = airSpeed;
                 hasMovedInAir = true;
             }
+
+            Vector2 desiredInputVelocity = new Vector2(xInput * desiredSpeed, isGrounded ? 0 : desiredVelocity.y);
+
+            var groundHit = grounder.GetGroundHit();
+            if (groundHit && xInput != 0)
+            {
+                float angleUp = Vector2.Angle(groundHit.normal, Vector2.up);
+
+                if (angleUp < 60)
+                {
+                    Vector2 tangent = Vector2.Perpendicular(groundHit.normal);
+
+                    tangent = tangent.normalized * -xInput;
+
+                    desiredInputVelocity = tangent * desiredSpeed;
+                }
+                Debug.DrawLine(transform.position, transform.position + new Vector3(desiredInputVelocity.x, desiredInputVelocity.y, 0));
+            }
+
+            
             if (xInput != 0)
             {
-                desiredVelocity.x = Mathf.SmoothDamp(desiredVelocity.x, xInput * desiredSpeed, ref accelerationX, 0.2f, float.MaxValue, Time.fixedDeltaTime);
+                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.2f, float.MaxValue, Time.fixedDeltaTime);
             }
             else
             {
-                desiredVelocity.x = Mathf.SmoothDamp(desiredVelocity.x, 0, ref accelerationX, 0.15f, float.MaxValue, Time.fixedDeltaTime);
+                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.15f, float.MaxValue, Time.fixedDeltaTime);
             }
         }
         else
         {
             xInput = 0;
-            desiredVelocity.x = Mathf.SmoothDamp(desiredVelocity.x, 0, ref accelerationX, isAttacking ? 0.2f : 0.05f, float.MaxValue, Time.fixedDeltaTime);
+            desiredVelocity = Vector2.SmoothDamp(desiredVelocity, new Vector2(0, desiredVelocity.y), ref acceleration, isAttacking ? 0.2f : 0.05f, float.MaxValue, Time.fixedDeltaTime);
         }
     }
 
@@ -530,5 +562,17 @@ public class PlayerController : MonoBehaviour
         isSleeping = false;
         wakePresses = 0;
         canRecoverFromSleeping = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        foreach(var contact in collision.contacts)
+        {
+            if(Vector2.Dot(contact.normal, Vector2.up) < 0)
+            {
+                isJumping = false;
+                desiredVelocity.y = 0; //we hit our head on something :(
+            }
+        }
     }
 }
