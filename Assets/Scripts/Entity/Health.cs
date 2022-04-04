@@ -12,12 +12,14 @@ public class Health : MonoBehaviour {
     public Color damageTintColor = Color.red;
     public float damageTintDuration = 0.2f;
 
-    public bool destroyOnDeath = false;
+    public float destroyOnDeath = -1;
 
     bool isDead = false;
 
     float lastDamageTime = 0;
     bool isDamageTinted = false;
+
+    public bool GetIsDead() { return isDead; }
 
     void Start()
     {
@@ -55,9 +57,9 @@ public class Health : MonoBehaviour {
         {
             Instantiate(gobj, this.transform.position, this.transform.rotation);
         }
-        if(destroyOnDeath)
+        if(destroyOnDeath >= 0)
         {
-            Destroy(gameObject);
+            Destroy(gameObject, destroyOnDeath);
         }
     }
 
@@ -72,5 +74,15 @@ public class Health : MonoBehaviour {
                 sprite.color = isDamageTinted ? damageTintColor : Color.white;
             }
         }
+    }
+
+    public void Heal(float value)
+    {
+        currentHealth = Mathf.Max(currentHealth + value, maxHealth);
+    }
+
+    public void Kill()
+    {
+        OnDamage(new Damage(maxHealth, null));
     }
 }

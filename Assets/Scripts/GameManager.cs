@@ -50,4 +50,22 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         throw new NotImplementedException();
     }
+
+    private void Update()
+    {
+        if(currentPlayer)
+        {
+            if(currentPlayer.GetComponent<Health>().GetIsDead())
+            {
+                currentPlayer.enabled = false;
+                StartCoroutine(GameOver_Routine());
+            }
+        }
+    }
+
+    IEnumerator GameOver_Routine()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+    }
 }
