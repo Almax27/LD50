@@ -173,7 +173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relativeCamera: {fileID: 0}
   parallaxScale: {x: 0.8, y: 1}
-  relativePosition: {x: 0.5, y: 0.5}
+  relativePosition: {x: 0.5, y: 0.26}
   tileSpacing: {x: 0, y: 0}
   sprite: {fileID: 21300000, guid: 1b8d01080229d90449b793df33533bba, type: 3}
   spriteSortOrder: -4
@@ -229,7 +229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relativeCamera: {fileID: 0}
   parallaxScale: {x: 0.78, y: 1}
-  relativePosition: {x: 0.5, y: 0.5}
+  relativePosition: {x: 0.5, y: 0.47}
   tileSpacing: {x: 0, y: 0}
   sprite: {fileID: 21300000, guid: 0843423b7592f0544b3c8c9a30ddb2b9, type: 3}
   spriteSortOrder: -3
@@ -713,11 +713,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3042468583137391901, guid: 7881c641083557c4b91e1ff7dd8aabf6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 183.7
+      value: 15.56
       objectReference: {fileID: 0}
     - target: {fileID: 3042468583137391901, guid: 7881c641083557c4b91e1ff7dd8aabf6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -37.7
+      value: -36.48
       objectReference: {fileID: 0}
     - target: {fileID: 3042468583137391901, guid: 7881c641083557c4b91e1ff7dd8aabf6, type: 3}
       propertyPath: m_LocalPosition.z
