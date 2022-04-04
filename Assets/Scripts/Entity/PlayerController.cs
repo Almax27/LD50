@@ -109,6 +109,8 @@ public class PlayerController : MonoBehaviour
 
     float stunnedUntilTime;
 
+    public bool levelComplete;
+
     void Start()
     {
         if (!meleeAttackBox) meleeAttackBox = GetComponentInChildren<AttackBox>();
@@ -123,52 +125,59 @@ public class PlayerController : MonoBehaviour
     {
         isAttacking = lastAttackTime > 0;
 
-        //get input
-        xInputRaw = Input.GetAxisRaw("Horizontal");
-        xInput = xInputRaw; // Mathf.SmoothDamp(xInput, xInputRaw, ref xInputVel, 0.1f, float.MaxValue, Time.deltaTime);
-        yInput = Input.GetAxis("Vertical");
-
-        wantsJump = Input.GetButton("Jump");
-        if (jumpPendingRelease && !wantsJump) jumpPendingRelease = false;
-
-        if (Input.GetKeyDown(KeyCode.S))
+        if (levelComplete)
         {
-            if(isSleeping && canRecoverFromSleeping)
-            {
-                wakePresses++;
-                print(string.Format("Pressed {0}/{1} to wake up", wakePresses, pressesToWakeUp));
-                if (wakePresses >= pressesToWakeUp)
-                {
-                    WakeUp();
-                }
-            }
-            else
-            {
-                Sleep();
-            }
+            xInput = 1;
         }
-
-        if (CanAttack() && Input.GetButtonDown("Attack"))
+        else
         {
-           // if(isAttacking) attackComboIndex++;
+            //get input
+            xInputRaw = Input.GetAxisRaw("Horizontal");
+            xInput = xInputRaw; // Mathf.SmoothDamp(xInput, xInputRaw, ref xInputVel, 0.1f, float.MaxValue, Time.deltaTime);
+            yInput = Input.GetAxis("Vertical");
 
-            animator.SetTrigger("onAttack");
-            lastAttackTime = Time.time;
-            pendingAttackDamage = true;
+            wantsJump = Input.GetButton("Jump");
+            if (jumpPendingRelease && !wantsJump) jumpPendingRelease = false;
 
-            if (xInputRaw != 0) isLookingRight = xInputRaw > 0;
-
-            var currentAttack = GetCurrentAttack();
-            if (meleeAttackBox && currentAttack != null)
+            if (Input.GetKeyDown(KeyCode.S))
             {
-                if (meleeAttackBox)
+                if (isSleeping && canRecoverFromSleeping)
                 {
-                    float attackMoveSpeed = currentAttack.playerSpeedX * (meleeAttackBox.IsTargetInRange() ? 0.5f : 1.0f);
-                    desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, attackMoveSpeed) : Mathf.Min(desiredVelocity.x, -attackMoveSpeed), desiredVelocity.y);
+                    wakePresses++;
+                    print(string.Format("Pressed {0}/{1} to wake up", wakePresses, pressesToWakeUp));
+                    if (wakePresses >= pressesToWakeUp)
+                    {
+                        WakeUp();
+                    }
                 }
+                else
+                {
+                    Sleep();
+                }
+            }
 
-                currentAttack.attackSound?.Play(transform.position);
-                meleeAttackBox.DealDamage(new Damage(currentAttack.damage, gameObject, currentAttack.hitSound, currentAttack.knockback), currentAttack.damageDelay);
+            if (CanAttack() && Input.GetButtonDown("Attack"))
+            {
+                // if(isAttacking) attackComboIndex++;
+
+                animator.SetTrigger("onAttack");
+                lastAttackTime = Time.time;
+                pendingAttackDamage = true;
+
+                if (xInputRaw != 0) isLookingRight = xInputRaw > 0;
+
+                var currentAttack = GetCurrentAttack();
+                if (meleeAttackBox && currentAttack != null)
+                {
+                    if (meleeAttackBox)
+                    {
+                        float attackMoveSpeed = currentAttack.playerSpeedX * (meleeAttackBox.IsTargetInRange() ? 0.5f : 1.0f);
+                        desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, attackMoveSpeed) : Mathf.Min(desiredVelocity.x, -attackMoveSpeed), desiredVelocity.y);
+                    }
+
+                    currentAttack.attackSound?.Play(transform.position);
+                    meleeAttackBox.DealDamage(new Damage(currentAttack.damage, gameObject, currentAttack.hitSound, currentAttack.knockback), currentAttack.damageDelay);
+                }
             }
         }
 
