@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pixelsPerUnit: 16
-  pixelScale: 16
+  pixelScale: 3
   smoothTime: 0.2
 --- !u!1 &8584100992867065798
 GameObject:
@@ -163,3 +163,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSpawnPoint: {fileID: 0}
   playerToSpawn: {fileID: 3266665632560690862, guid: fac29d7c64955fd40b69154f4c925e69, type: 3}
+  gameMusic:
+    clip: {fileID: 0}
+    volume: 1
+    loop: 1
+    fadeIn: 1
+    fadeOut: 1
+    transitionMode: 1

@@ -59,16 +59,16 @@ public class FollowCamera : MonoBehaviour {
         //clamp to world size
         var pos = transform.position;
         Vector2 viewSize = new Vector2(cam.orthographicSize * cam.aspect, cam.orthographicSize);
-        float x = Mathf.Max(0, worldSize.x*0.5f - viewSize.x);
-        float y = Mathf.Max(0, worldSize.y*0.5f - viewSize.y);
-        pos.x = Mathf.Clamp(pos.x, -x, x);
-        pos.y = Mathf.Clamp(pos.y, -y, y);
+
+        //Clamp from top left
+        pos.x = Mathf.Clamp(pos.x, viewSize.x, worldSize.x - viewSize.x);
+        pos.y = Mathf.Clamp(pos.y, -worldSize.y + viewSize.y, -viewSize.y);
         transform.position = pos;
 	}
 
     void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(Vector3.zero, worldSize);
+        Gizmos.DrawWireCube(new Vector2(worldSize.x * 0.5f, -worldSize.y * 0.5f), worldSize);
     }
 }
