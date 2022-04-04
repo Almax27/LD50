@@ -42,9 +42,9 @@ public class EnemyController : MonoBehaviour
 
         if (damage.owner)
         {
-            Vector2 knockback = (transform.position - damage.owner.transform.position).normalized;
-            desiredVelocity.x = Mathf.Sign(knockback.x) * knockbackVector.x;
-            desiredVelocity.y = knockbackVector.y;
+            Vector2 knockbackDir = (transform.position - damage.owner.transform.position).normalized;
+            desiredVelocity.x = Mathf.Sign(knockbackDir.x) * damage.knockback.x;
+            desiredVelocity.y = damage.knockback.y;
             GetComponent<Rigidbody2D>().velocity = desiredVelocity;
             StunFor(stunDuration);
         }

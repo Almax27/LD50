@@ -21,6 +21,11 @@ public class Grounder : MonoBehaviour {
         }
     }
 
+    public RaycastHit2D GetGroundHit()
+    {
+        return Physics2D.Raycast(transform.position, Vector2.down, size.y * 2, groundMask);
+    }
+
     void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;

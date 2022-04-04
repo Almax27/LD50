@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : SingletonBehaviour<GameManager>
 {
 
     public Transform playerSpawnPoint;
@@ -11,11 +11,15 @@ public class GameManager : MonoBehaviour
 
     PlayerController currentPlayer;
 
+    SuperTiled2Unity.SuperMap superMap;
+
     public MusicSetup gameMusic;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         var playerGO = GameObject.Instantiate(playerToSpawn, playerSpawnPoint.position, playerSpawnPoint.rotation);
         currentPlayer = playerGO.GetComponent<PlayerController>();
 
@@ -31,10 +35,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public SuperTiled2Unity.SuperMap GetMap()
     {
-        
+        if (!superMap) superMap = FindObjectOfType<SuperTiled2Unity.SuperMap>();
+        return superMap;
+    }
+
+    public Vector2 GetMapSize()
+    {
+        return GetMap() ? new Vector2(GetMap().m_Width, GetMap().m_Height) : Vector2.zero;
     }
 
     internal void OnLoss(string Message)
