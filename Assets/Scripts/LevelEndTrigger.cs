@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class LevelEndTrigger : MonoBehaviour
 {
+    public BoxCollider2D boxCollider;
+
     public string targetLevel = "Title";
 
 
@@ -27,5 +29,14 @@ public class LevelEndTrigger : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
 
         SceneManager.LoadScene(targetLevel);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (boxCollider)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(transform.position, boxCollider.size * transform.lossyScale);
+        }
     }
 }
