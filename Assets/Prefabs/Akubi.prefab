@@ -287,7 +287,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   jumpHeight: 4.1
-  minJumpTime: 0.1
+  minJumpTime: 0
   maxJumpTime: 0.4
   spawnOnJump: []
   climbExitTime: 0.2

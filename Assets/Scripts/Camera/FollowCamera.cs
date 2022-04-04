@@ -7,9 +7,15 @@ public class FollowCamera : MonoBehaviour {
     public float lookDamp = 0.3f;
     public float followDamp = 0.5f;
     public Vector3 offset = new Vector3(0,2,-10);
+    public float followGraceDistanceUp = 5;
+    public float maxDistanceFromTarget = 5;
 
     Vector3 followVelocity = Vector3.zero;
     Vector3 desiredPosition = Vector3.zero;
+
+
+
+    float baseY = 0;
 
     Camera cam = null;
 
@@ -21,6 +27,7 @@ public class FollowCamera : MonoBehaviour {
         if (target)
         {
             desiredPosition = target.position;
+            baseY = target.position.y;
         }
         cam = GetComponent<Camera>();
 	}
@@ -28,12 +35,24 @@ public class FollowCamera : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () 
     {
-        if (target != null)
+        if(target == null)
+            target = GameManager.Instance.currentPlayer.transform;
+
+        var player = GameManager.Instance.currentPlayer;
+
+        if (target != null && player)
         {
-            desiredPosition = target.position;
+            desiredPosition = target.position + offset;
+
+            if (player.grounder.isGrounded && player.grounder.groundedTick > 0.1f && Mathf.Abs(player.rigidbody2D.velocity.y) <= 0.1f)
+            {
+                baseY = target.position.y + offset.y;
+            }
+            desiredPosition.y = baseY;
+
             if (snap)
             {
-                transform.position = desiredPosition + offset;
+                transform.position = desiredPosition;
                 followVelocity = Vector3.zero;
                 snap = false;
             }
@@ -41,11 +60,16 @@ public class FollowCamera : MonoBehaviour {
             {
                 if (followDamp > 0)
                 {
-                    transform.position = Vector3.SmoothDamp(transform.position, desiredPosition + offset, ref followVelocity, followDamp, float.MaxValue, Time.smoothDeltaTime);
+                    var newPos = Vector3.SmoothDamp(transform.position, desiredPosition, ref followVelocity, followDamp, float.MaxValue, Time.smoothDeltaTime);
+                    var relPos = newPos - target.position;
+                    var clampedPos = Vector2.ClampMagnitude(newPos - target.position, maxDistanceFromTarget);
+                    relPos.x = clampedPos.x;
+                    relPos.y = clampedPos.y;
+                    transform.position = target.position + relPos;
                 }
                 else if (followDamp == 0)
                 {
-                    transform.position = desiredPosition + offset;
+                    transform.position = desiredPosition;
                 }
             }
         }

@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     public float airSpeed = 6.0f;
     public float idleSpeed = 5.0f;
     public float climbingSpeed = 0.2f;
+    public float maxFallingSpeedY = 20;
     public bool allowMoveToCancelClimb = false;
     public PhysicsMaterial2D groundedPhysicsMaterial;
     public PhysicsMaterial2D airPhysicsMaterial;
@@ -76,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
     Animation bodyAnim;
     Animator animator;
-    new Rigidbody2D rigidbody2D;
+    public new Rigidbody2D rigidbody2D;
     CapsuleCollider2D capsuleCollider2D;
 
     float footstepDistTraveled = 0;
@@ -190,7 +191,7 @@ public class PlayerController : MonoBehaviour
         //apply gravity
         if (isGrounded)
         {
-            desiredVelocity.y = 0;
+            //desiredVelocity.y = 0;
         }
         else if (!isClimbing && !isJumping)
         {
@@ -213,7 +214,7 @@ public class PlayerController : MonoBehaviour
         //update animator
         if (animator && animator.runtimeAnimatorController)
         {
-            animator.SetBool("isGrounded", isGrounded);
+            animator.SetBool("isGrounded", grounder.isGrounded && grounder.groundedTick > 0.05f);
             //animator.SetBool("isClimbing", isClimbing);
         }
 
@@ -240,6 +241,8 @@ public class PlayerController : MonoBehaviour
         }
 
         lastPosition = rigidbody2D.position;
+
+        desiredVelocity.y = Mathf.Max(desiredVelocity.y, -maxFallingSpeedY);
         rigidbody2D.velocity = desiredVelocity;
     }
 
@@ -340,7 +343,7 @@ public class PlayerController : MonoBehaviour
     void HandleJumping(bool isGrounded)
     {
         //Reset jump
-        if (!wantsJump && (isGrounded || isClimbing))
+        if (!wantsJump && jumpTick >= minJumpTime && (isGrounded || isClimbing))
         {
             jumpsRemaining = maxJumps;
             if(isJumping)
@@ -424,23 +427,19 @@ public class PlayerController : MonoBehaviour
             Vector2 desiredInputVelocity = new Vector2(xInput * desiredSpeed, isGrounded ? 0 : desiredVelocity.y);
 
             var groundHit = grounder.GetGroundHit();
-            if (groundHit && xInput != 0)
+            float angleUp = groundHit ? Vector2.Angle(groundHit.normal, Vector2.up) : 0;
+            if (groundHit && angleUp > 1 && angleUp < 60  && xInput != 0 && !isJumping)
             {
-                float angleUp = Vector2.Angle(groundHit.normal, Vector2.up);
+                Vector2 tangent = Vector2.Perpendicular(groundHit.normal);
 
-                if (angleUp < 60)
-                {
-                    Vector2 tangent = Vector2.Perpendicular(groundHit.normal);
+                tangent = tangent.normalized * -xInput;
 
-                    tangent = tangent.normalized * -xInput;
+                desiredInputVelocity = tangent * desiredSpeed;
 
-                    desiredInputVelocity = tangent * desiredSpeed;
-                }
-                Debug.DrawLine(transform.position, transform.position + new Vector3(desiredInputVelocity.x, desiredInputVelocity.y, 0));
+                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.1f, float.MaxValue, Time.fixedDeltaTime);
             }
 
-            
-            if (xInput != 0)
+            else if (xInput != 0)
             {
                 desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.2f, float.MaxValue, Time.fixedDeltaTime);
             }

@@ -9,7 +9,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public Transform playerSpawnPoint;
     public PlayerController playerToSpawn;
 
-    PlayerController currentPlayer;
+    public PlayerController currentPlayer;
 
     SuperTiled2Unity.SuperMap superMap;
 

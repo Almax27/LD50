@@ -8,7 +8,7 @@ public class Grounder : MonoBehaviour {
 
     public Vector2 size = Vector2.one;
 
-    float groundedTick = 0.0f;
+    public float groundedTick = 0.0f;
 
     void FixedUpdate()
     {
@@ -27,18 +27,18 @@ public class Grounder : MonoBehaviour {
             }
             else
             {
-                groundedTick += Time.fixedDeltaTime;
                 if(groundedTick > 0.1f) //grace period
                 {
                     isGrounded = newGrounded; //left the ground
                 }
             }
-        }        
+        }
+        groundedTick += Time.fixedDeltaTime;
     }
 
     public RaycastHit2D GetGroundHit()
     {
-        return Physics2D.Raycast(transform.position, Vector2.down, size.y * 2, groundMask);
+        return Physics2D.CircleCast(transform.parent.position, Mathf.Max(size.x, size.y), Vector2.down, Mathf.Abs(transform.localPosition.y + size.y), groundMask);
     }
 
     void OnDrawGizmos()

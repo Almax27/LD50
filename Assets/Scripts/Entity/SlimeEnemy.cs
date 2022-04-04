@@ -45,7 +45,13 @@ public class SlimeEnemy : EnemyController
         if(pendingJump)
         {
             pendingJump = false;
-            rigidbody2D.velocity = new Vector2(0, jumpSpeed);
+            Vector2 jumpDirection = new Vector2(Random.value > 0.5f ? 1 : -1, 5);
+            var player = GameManager.Instance.currentPlayer;
+            if (player)
+            {
+                jumpDirection.x = player.transform.position.x - transform.position.x;
+            }
+            rigidbody2D.velocity = jumpDirection.normalized * jumpSpeed;
         }
     }
 

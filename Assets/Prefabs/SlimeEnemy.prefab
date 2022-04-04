@@ -67,12 +67,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 941f845f734d3624faa18a6c47263c31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10
-  currentHealth: 10
+  maxHealth: 3
+  currentHealth: 3
   spawnOnDamage: []
-  spawnOnDeath: []
+  spawnOnDeath:
+  - {fileID: 8706550502472324969, guid: f9182b899dcac614191bdd141616a82f, type: 3}
   damageTintColor: {r: 1, g: 0, b: 0, a: 1}
   damageTintDuration: 0.2
+  destroyOnDeath: 1
 --- !u!70 &560130469609067494
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
