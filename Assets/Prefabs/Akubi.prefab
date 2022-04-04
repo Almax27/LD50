@@ -250,7 +250,7 @@ MonoBehaviour:
   grounder: {fileID: 1877360471677491877}
   climber: {fileID: 0}
   climbGrounder: {fileID: 0}
-  groundSpeed: 12
+  groundSpeed: 10
   airSpeed: 6
   idleSpeed: 5
   climbingSpeed: 0.2
@@ -286,9 +286,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  jumpHeight: 3
-  minJumpTime: 0.3
-  maxJumpTime: 0.3
+  jumpHeight: 4.1
+  minJumpTime: 0.1
+  maxJumpTime: 0.4
   spawnOnJump: []
   climbExitTime: 0.2
   meleeAttackBox: {fileID: 0}
@@ -302,7 +302,7 @@ MonoBehaviour:
   - damageDelay: 0.2
     attackSound: {fileID: 11400000, guid: f11fe43e73ba2b14ea67c5cf4be0e10c, type: 2}
     hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
-  rootOnDamageTime: 0.2
+  stunDuration: 0.2
   knockbackVector: {x: 7, y: 5}
   isSleeping: 0
   pressesToWakeUp: 10

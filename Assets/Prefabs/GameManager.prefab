@@ -61,7 +61,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -100,7 +100,7 @@ MonoBehaviour:
   target: {fileID: 0}
   lookDamp: 3.31
   followDamp: 0.1
-  offset: {x: 0, y: 0, z: -10}
+  offset: {x: 0, y: 3, z: -10}
   worldSize: {x: 100, y: 100}
 --- !u!114 &6903343366443276156
 MonoBehaviour:

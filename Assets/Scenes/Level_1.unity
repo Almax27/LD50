@@ -196,6 +196,22 @@ PrefabInstance:
       propertyPath: playerSpawnPoint
       value: 
       objectReference: {fileID: 118023359}
+    - target: {fileID: 6903343366443276156, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6903343366443276156, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: pixelScale
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7511454769119142753, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: worldSize.x
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7511454769119142753, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: worldSize.y
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8584100992867065798, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -263,11 +279,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3042468583137391901, guid: 7881c641083557c4b91e1ff7dd8aabf6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 24.53
+      value: 17.42
       objectReference: {fileID: 0}
     - target: {fileID: 3042468583137391901, guid: 7881c641083557c4b91e1ff7dd8aabf6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -19.89
+      value: -35.83
       objectReference: {fileID: 0}
     - target: {fileID: 3042468583137391901, guid: 7881c641083557c4b91e1ff7dd8aabf6, type: 3}
       propertyPath: m_LocalPosition.z
