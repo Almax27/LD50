@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickupDestroyDelay: 1
+  pickupSFX: {fileID: 11400000, guid: f28d6765fdca647448d8ef1f3d82c1a0, type: 2}
 --- !u!212 &4108822676650249271
 SpriteRenderer:
   m_ObjectHideFlags: 0
