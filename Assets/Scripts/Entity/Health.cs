@@ -7,7 +7,9 @@ public class Health : MonoBehaviour {
     float currentHealth = 10;
 
     public GameObject[] spawnOnDamage = new GameObject[0];
+    public FAFAudioSFXSetup damageSFX;
     public GameObject[] spawnOnDeath = new GameObject[0];
+    public GameObject[] spawnOnDestroy = new GameObject[0];
 
     public Color damageTintColor = Color.red;
     public float damageTintDuration = 0.2f;
@@ -41,6 +43,8 @@ public class Health : MonoBehaviour {
             Instantiate(gobj, this.transform.position, this.transform.rotation);
         }
 
+        damageSFX?.Play(transform.position);
+
         if (!isDead && currentHealth <= 0)
         {
             currentHealth = 0;
@@ -57,9 +61,21 @@ public class Health : MonoBehaviour {
         {
             Instantiate(gobj, this.transform.position, this.transform.rotation);
         }
-        if(destroyOnDeath >= 0)
+
+        if (destroyOnDeath >= 0)
         {
             Destroy(gameObject, destroyOnDeath);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (isDead)
+        {
+            foreach (GameObject gobj in spawnOnDestroy)
+            {
+                Instantiate(gobj, this.transform.position, this.transform.rotation);
+            }
         }
     }
 

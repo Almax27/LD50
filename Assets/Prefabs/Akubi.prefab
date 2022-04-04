@@ -197,6 +197,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   size: {x: 0.6, y: 0.4}
+  groundedTick: 0
 --- !u!1 &7020762558923366422
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,6 +211,7 @@ GameObject:
   - component: {fileID: 7343713825006861650}
   - component: {fileID: 9061667629039961856}
   - component: {fileID: 7683289905296613399}
+  - component: {fileID: 6313297037588329702}
   m_Layer: 3
   m_Name: Akubi
   m_TagString: Untagged
@@ -254,6 +256,7 @@ MonoBehaviour:
   airSpeed: 6
   idleSpeed: 5
   climbingSpeed: 0.2
+  maxFallingSpeedY: 20
   allowMoveToCancelClimb: 0
   groundedPhysicsMaterial: {fileID: 6200000, guid: 645178ab8f700d34eb3451c648d8b436, type: 2}
   airPhysicsMaterial: {fileID: 6200000, guid: cb1220d668d0a4343a80076c4a46c6c7, type: 2}
@@ -318,6 +321,8 @@ MonoBehaviour:
   isMovingRight: 1
   isLookingRight: 1
   isClimbing: 0
+  rigidbody2D: {fileID: 0}
+  levelComplete: 0
 --- !u!50 &7343713825006861650
 Rigidbody2D:
   serializedVersion: 4
@@ -368,8 +373,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
-  currentHealth: 10
   spawnOnDamage: []
-  spawnOnDeath: []
+  damageSFX: {fileID: 11400000, guid: 08f87809e750b774b9113e202f185825, type: 2}
+  spawnOnDeath:
+  - {fileID: 853264293462487475, guid: 643d27bd8aec3364c98adc7f5f26883b, type: 3}
+  spawnOnDestroy: []
   damageTintColor: {r: 1, g: 0, b: 0, a: 1}
   damageTintDuration: 0.2
+  destroyOnDeath: 0
+--- !u!114 &6313297037588329702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7020762558923366422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b12154c0746cc7941acd980f37be0ca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

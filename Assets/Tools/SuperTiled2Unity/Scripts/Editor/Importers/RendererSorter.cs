@@ -38,6 +38,10 @@ namespace SuperTiled2Unity.Editor
         public void BeginObjectLayer(SuperObjectLayer layer)
         {
             SortingLayerCheck(layer.gameObject);
+
+            //Track any sort order
+            layer.m_SortOrder = m_CurrentSortOrder;
+            m_CurrentSortOrder++;
         }
 
         public void EndObjectLayer(SuperObjectLayer layer)

@@ -7,11 +7,14 @@ public class TitleManager : MonoBehaviour
 {
     public string firstLevelName = "Level_1";
     public Animator titleAnimator;
+    public MusicSetup music;
 
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(RunTitleScreen());
+
+        FAFAudio.Instance.TryPlayMusic(music);
     }
 
     IEnumerator RunTitleScreen()

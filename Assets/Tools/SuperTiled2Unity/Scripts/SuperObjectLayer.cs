@@ -6,5 +6,8 @@ namespace SuperTiled2Unity
     {
         [ReadOnly]
         public Color m_Color;
+
+        [ReadOnly]
+        public int m_SortOrder;
     }
 }

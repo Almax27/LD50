@@ -298,6 +298,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstLevelName: Level_1
   titleAnimator: {fileID: 351153080}
+  music:
+    clip: {fileID: 8300000, guid: 0bbdc96edf972a444a64f6e44ea9e069, type: 3}
+    volume: 1
+    loop: 1
+    fadeIn: 1
+    fadeOut: 1
+    transitionMode: 1
 --- !u!4 &1567790673
 Transform:
   m_ObjectHideFlags: 0

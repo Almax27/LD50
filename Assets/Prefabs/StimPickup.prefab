@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4108822676650249271}
   - component: {fileID: 780040306404834592}
   - component: {fileID: 903673202576485103}
+  - component: {fileID: -524032676483122124}
   m_Layer: 0
   m_Name: StimPickup
   m_TagString: Untagged
@@ -144,3 +145,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.9375, y: 3.3125}
   m_EdgeRadius: 0
+--- !u!114 &-524032676483122124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4624819236624066327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b12154c0746cc7941acd980f37be0ca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

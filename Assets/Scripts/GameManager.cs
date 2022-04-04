@@ -12,9 +12,13 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     public PlayerController currentPlayer;
 
-    SuperTiled2Unity.SuperMap superMap;
+    public SuperTiled2Unity.SuperMap superMap { get; private set; }
+
+    public SuperTiled2Unity.SuperObjectLayer gameLayer { get; private set; }
 
     public MusicSetup gameMusic;
+
+    bool isRestarting = false;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -33,6 +37,15 @@ public class GameManager : SingletonBehaviour<GameManager>
         if(gameMusic != null)
         {
             FAFAudio.Instance.TryPlayMusic(gameMusic);
+        }
+
+        var mapLayers = GetMap().GetComponentsInChildren<SuperTiled2Unity.SuperLayer>();
+        foreach(var layer in mapLayers)
+        {
+            if(layer.m_TiledName == "Game" &&  layer is SuperTiled2Unity.SuperObjectLayer)
+            {
+                gameLayer = layer as SuperTiled2Unity.SuperObjectLayer;
+            }
         }
     }
 
@@ -54,11 +67,11 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     private void Update()
     {
-        if(currentPlayer)
+        if(!isRestarting)
         {
-            if(currentPlayer.GetComponent<Health>().GetIsDead())
+            if(!currentPlayer || currentPlayer.GetComponent<Health>().GetIsDead())
             {
-                currentPlayer = null;
+                isRestarting = true;
                 StartCoroutine(GameOver_Routine());
             }
         }
@@ -66,7 +79,7 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     IEnumerator GameOver_Routine()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

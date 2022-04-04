@@ -35,7 +35,7 @@ public class FollowCamera : MonoBehaviour {
 	// Update is called once per frame
 	void LateUpdate () 
     {
-        if(target == null)
+        if(target == null && GameManager.Instance.currentPlayer)
             target = GameManager.Instance.currentPlayer.transform;
 
         var player = GameManager.Instance.currentPlayer;
