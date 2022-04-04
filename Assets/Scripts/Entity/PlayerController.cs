@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour
             pendingAttackDamage = true;
 
             if(xInputRaw != 0) isLookingRight = xInputRaw > 0;
-            desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, 10) : Mathf.Min(desiredVelocity.x, -10), desiredVelocity.y);
+            //desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, 10) : Mathf.Min(desiredVelocity.x, -10), desiredVelocity.y);
             
             var currentAttack = GetCurrentAttack();
             if (currentAttack != null)
@@ -184,7 +184,7 @@ public class PlayerController : MonoBehaviour
         if (!isClimbing && !isJumping)
         {
             float gravityMultipler = 1.0f;
-            if(pendingAttackDamage && attackComboIndex == 0)
+            if(pendingAttackDamage && attackComboIndex == 0 && desiredVelocity.y < 0)
             {
                 gravityMultipler = 0;
             }
