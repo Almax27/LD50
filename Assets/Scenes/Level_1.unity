@@ -320,7 +320,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7511454769119142753, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: worldSize.x
-      value: 300
+      value: 210
       objectReference: {fileID: 0}
     - target: {fileID: 7511454769119142753, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: worldSize.y
