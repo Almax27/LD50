@@ -26,7 +26,6 @@ public class Health : MonoBehaviour {
     {
         currentHealth = maxHealth;
         isDead = false;
-        lastDamageTime = damageTintDuration;
     }
 
     void OnDamage(Damage damage)
@@ -58,7 +57,7 @@ public class Health : MonoBehaviour {
 
     void Update()
     {
-        bool doTint = Time.time - lastDamageTime < damageTintDuration;
+        bool doTint = lastDamageTime > 0 && Time.time - lastDamageTime < damageTintDuration;
         if(doTint != isDamageTinted)
         {
             isDamageTinted = doTint;

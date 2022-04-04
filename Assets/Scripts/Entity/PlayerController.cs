@@ -5,9 +5,9 @@ using System.Collections;
 [System.Serializable]
 public class MeleeAttack
 {
-    public float damageDelay = 0;
-    public string animStateName;
-    public AnimationClip anim = null;
+    public float damageDelay = 0.3f;
+    public FAFAudioSFXSetup attackSound;
+    public FAFAudioSFXSetup hitSound;
 }
 
 public class Idle
@@ -49,20 +49,18 @@ public class PlayerController : MonoBehaviour
     [Header("Climbing")]
     public float climbExitTime = 0.2f; //time after leaving climbable before can climb again
 
-    [Header("Animation")]
-    public AnimationClip runningAnim = null;
-    public Idle[] idleAnims = null;
-    public MeleeAttack[] meleeAttackAnims = new MeleeAttack[0];
-
     [Header("MeleeAttack")]
-    public AudioClip[] attackSounds = new AudioClip[0];
+    public AttackBox meleeAttackBox;
+    public MeleeAttack[] meleeAttacks = new MeleeAttack[0];
 
     [Header("Damage")]
-    public float rootOnDamageTime = 0.2f;
+    public float stunDuration = 0.2f;
+    public Vector2 knockbackVector = new Vector2(5.0f, 3.0f);
 
     [Header("Sleeping")]
     public bool isSleeping = false;
     public int pressesToWakeUp = 10;
+    bool canRecoverFromSleeping = false;
     int wakePresses = 0;
 
     [Header("State")]
@@ -102,8 +100,11 @@ public class PlayerController : MonoBehaviour
     Vector2 desiredVelocity;
     float accelerationX = 0;
 
+    float stunnedUntilTime;
+
     void Start()
     {
+        if (!meleeAttackBox) meleeAttackBox = GetComponentInChildren<AttackBox>();
         bodyAnim = body ? body.GetComponent<Animation>() : null;
         animator = GetComponentInChildren<Animator>();
         rigidbody2D = GetComponent<Rigidbody2D>();
@@ -121,17 +122,41 @@ public class PlayerController : MonoBehaviour
         yInput = Input.GetAxis("Vertical");
 
         wantsJump = Input.GetButton("Jump");
-        if (jumpPendingRelease && !wantsJump) jumpPendingRelease = false;        
+        if (jumpPendingRelease && !wantsJump) jumpPendingRelease = false;
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            if(isSleeping && canRecoverFromSleeping)
+            {
+                wakePresses++;
+                print(string.Format("Pressed {0}/{1} to wake up", wakePresses, pressesToWakeUp));
+                if (wakePresses >= pressesToWakeUp)
+                {
+                    WakeUp();
+                }
+            }
+            else
+            {
+                Sleep();
+            }
+        }
 
         if (CanAttack() && Input.GetButtonDown("Attack"))
         {
+           // if(isAttacking) attackComboIndex++;
+
             animator.SetTrigger("onAttack");
             lastAttackTime = Time.time;
             pendingAttackDamage = true;
+
+            if(xInputRaw != 0) isLookingRight = xInputRaw > 0;
             desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, 10) : Mathf.Min(desiredVelocity.x, -10), desiredVelocity.y);
-            if (attackSounds.Length > 0 && attackComboIndex < attackSounds.Length)
+            
+            var currentAttack = GetCurrentAttack();
+            if (currentAttack != null)
             {
-                FAFAudio.Instance.PlayOnce2D(attackSounds[attackComboIndex], transform.position);
+                currentAttack.attackSound?.Play(transform.position);
+                meleeAttackBox?.DealDamage(new Damage(1, gameObject, currentAttack.hitSound), currentAttack.damageDelay);
             }
         }
 
@@ -186,25 +211,39 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded)
         {
-            footstepDistTraveled += Mathf.Abs(rigidbody2D.position.x - lastPosition.x);
+            float deltaX = Mathf.Abs(rigidbody2D.position.x - lastPosition.x);
+            footstepDistTraveled += deltaX;
             if (footstepDistTraveled > footstepInterval)
             {
                 footstepDistTraveled -= footstepInterval;
                 footStepAudio.Play(transform.position);
             }
+            else if(deltaX < 0.01f)
+            {
+                footstepDistTraveled = footstepInterval * 0.99f;
+            }
         }
         else
         {
-            footstepDistTraveled = 0;
+            footstepDistTraveled = footstepInterval * 0.99f;
         }
 
         lastPosition = rigidbody2D.position;
         rigidbody2D.velocity = desiredVelocity;
     }
 
+    MeleeAttack GetCurrentAttack()
+    {
+        if (meleeAttacks.Length > 0 && attackComboIndex < meleeAttacks.Length)
+        {
+            return meleeAttacks[attackComboIndex];
+        }
+        return null;
+    }
+
     bool CanAttack()
     {
-        return !isSleeping && !pendingAttackDamage && attackComboIndex < 3;
+        return !isSleeping && !pendingAttackDamage && attackComboIndex < 3 && !IsStunned();
     }
 
     void HandleAttacking()
@@ -212,18 +251,15 @@ public class PlayerController : MonoBehaviour
         if (lastAttackTime > 0)
         {
             float attackTime = Time.time - lastAttackTime;
-            if (attackTime > 0.8f) //reset attack
+
+            //Reset attack
+            if (attackTime > 0.6f) 
             {
                 lastAttackTime = 0;
                 attackComboIndex = 0;
                 pendingAttackDamage = false;
             }
-            if (attackTime > 0.6f && (xInputRaw != 0 || wantsJump))
-            {
-                lastAttackTime = 0;
-                attackComboIndex = 0;
-                pendingAttackDamage = false;
-            }
+            //Trigger damage
             else if (attackTime > 0.3f)
             {
                 if (pendingAttackDamage)
@@ -231,7 +267,6 @@ public class PlayerController : MonoBehaviour
                     animator.ResetTrigger("onAttack");
                     pendingAttackDamage = false;
                     attackComboIndex++;
-                    //TODO: do damage here
                 }
             }
         }
@@ -288,7 +323,7 @@ public class PlayerController : MonoBehaviour
 
     bool CanJump()
     {
-        return !isAttacking && !isSleeping;
+        return (!isAttacking || attackComboIndex == 0) && !isSleeping && !IsStunned();
     }
 
     void HandleJumping(bool isGrounded)
@@ -345,8 +380,7 @@ public class PlayerController : MonoBehaviour
 
     bool CanMove()
     {
-        bool isRooted = Time.time - lastDamageTime < rootOnDamageTime;
-        return !isSleeping && !isClimbing && !isAttacking && !isRooted;
+        return !isSleeping && !isClimbing && !isAttacking && !IsStunned();
     }
 
     void HandleMovement(bool isGrounded)
@@ -357,7 +391,11 @@ public class PlayerController : MonoBehaviour
             hasMovedInAir = false;
         }
 
-        if (CanMove())
+        if(IsStunned())
+        {
+            desiredVelocity = rigidbody2D.velocity;
+        }
+        else if (CanMove())
         {
             float desiredSpeed = groundSpeed;
             //use air speed when changing direction in the air
@@ -384,7 +422,7 @@ public class PlayerController : MonoBehaviour
 
     bool CanLook()
     {
-        return !isSleeping && !isAttacking;
+        return !isSleeping && !isAttacking && !IsStunned();
     }
 
     void UpdateFacing()
@@ -400,9 +438,17 @@ public class PlayerController : MonoBehaviour
         if (body)
         {
             body.flipX = !isLookingRight;
+
             var p = body.transform.localPosition;
             p.x = Mathf.Abs(p.x) * (isLookingRight ? 1 : -1);
             body.transform.localPosition = p;
+        }
+
+        if (meleeAttackBox)
+        {
+            var p = meleeAttackBox.transform.localPosition;
+            p.x = Mathf.Abs(p.x) * (isLookingRight ? 1 : -1);
+            meleeAttackBox.transform.localPosition = p;
         }
     }
 
@@ -427,25 +473,62 @@ public class PlayerController : MonoBehaviour
         rigidbody2D.velocity = desiredVelocity;
     }
 
+    public void StunFor(float duration)
+    {
+        stunnedUntilTime = Time.time + duration;
+    }
+
+    public bool IsStunned()
+    {
+        return Time.time < stunnedUntilTime;
+    }
+
     public virtual void OnDamage(Damage damage)
     {
         lastDamageTime = Time.time;
+
+        if (damage.owner)
+        {
+            Vector2 knockback = (transform.position - damage.owner.transform.position).normalized;
+            desiredVelocity.x = Mathf.Sign(knockback.x) * knockbackVector.x;
+            desiredVelocity.y = knockbackVector.y;
+            rigidbody2D.velocity = desiredVelocity;
+            StunFor(stunDuration);
+        }
         //animator.SetTrigger("onDamage");
     }
 
     void OnDeath()
     {
-        if (animator && animator.runtimeAnimatorController)
-        {
-            animator.SetTrigger("onDeath");
-        }
+        Sleep();
 
-        this.enabled = false;
-        FindObjectOfType<GameManager>().OnLoss("You Died.");
+        //this.enabled = false;
+        //FindObjectOfType<GameManager>().OnLoss("You Died.");
     }
 
     void OnDeathAnimFinished()
     {
         //Destroy(gameObject);
+    }
+
+    void OnFallingAsleepExit()
+    {
+        canRecoverFromSleeping = true;
+    }
+
+    void Sleep()
+    {
+        if (!isSleeping)
+        {
+            isSleeping = true;
+            animator.SetTrigger("onSleep");
+        }
+    }
+
+    void WakeUp()
+    {
+        isSleeping = false;
+        wakePresses = 0;
+        canRecoverFromSleeping = false;
     }
 }

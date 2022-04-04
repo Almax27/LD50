@@ -71,8 +71,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 1713546961119873806, guid: 141c40d05cdb3aa418f6a2b36b2c12b6, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 2763174295139914133, guid: 141c40d05cdb3aa418f6a2b36b2c12b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -102,6 +102,53 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &4819185715155920263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 335273542260237308}
+  - component: {fileID: 6575146116183885868}
+  m_Layer: 3
+  m_Name: Attack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &335273542260237308
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4819185715155920263}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.64, y: 0.01, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3837244067766469713}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6575146116183885868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4819185715155920263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecc4532799359cd4380c898209f789a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: {x: 3.5, y: 2}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &5454059753344965368
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,6 +209,7 @@ GameObject:
   - component: {fileID: 3266665632560690862}
   - component: {fileID: 7343713825006861650}
   - component: {fileID: 9061667629039961856}
+  - component: {fileID: 7683289905296613399}
   m_Layer: 3
   m_Name: Akubi
   m_TagString: Untagged
@@ -182,6 +230,7 @@ Transform:
   m_Children:
   - {fileID: 4601160073767848968}
   - {fileID: 6644258560276794022}
+  - {fileID: 335273542260237308}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -208,7 +257,7 @@ MonoBehaviour:
   allowMoveToCancelClimb: 0
   groundedPhysicsMaterial: {fileID: 6200000, guid: 645178ab8f700d34eb3451c648d8b436, type: 2}
   airPhysicsMaterial: {fileID: 6200000, guid: cb1220d668d0a4343a80076c4a46c6c7, type: 2}
-  footstepInterval: 2
+  footstepInterval: 4
   footStepAudio: {fileID: 11400000, guid: 7095dac937fbf4c4f9dfdc524ce3a39f, type: 2}
   jumpAudio: {fileID: 11400000, guid: eb78611996b4f2c40ae5c5b4e282257e, type: 2}
   landAudio: {fileID: 11400000, guid: 258c70e2aa448bd40bead4305d9712a1, type: 2}
@@ -242,22 +291,19 @@ MonoBehaviour:
   maxJumpTime: 0.3
   spawnOnJump: []
   climbExitTime: 0.2
-  runningAnim: {fileID: 0}
-  meleeAttackAnims:
-  - damageDelay: 0
-    animStateName: 
-    anim: {fileID: 0}
-  - damageDelay: 0
-    animStateName: 
-    anim: {fileID: 0}
-  - damageDelay: 0
-    animStateName: 
-    anim: {fileID: 0}
-  attackSounds:
-  - {fileID: 8300000, guid: 5587f28abf2ba5b46adb699429f2c6cb, type: 3}
-  - {fileID: 8300000, guid: a5aebb6d195c86a4b80656a7471f9a66, type: 3}
-  - {fileID: 8300000, guid: 43794c2999d850348a3bd92f542cab02, type: 3}
+  meleeAttackBox: {fileID: 0}
+  meleeAttacks:
+  - damageDelay: 0.2
+    attackSound: {fileID: 11400000, guid: fa00dda6c8f25c34a928b09d524cd003, type: 2}
+    hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
+  - damageDelay: 0.2
+    attackSound: {fileID: 11400000, guid: 18212870aaefb164e825fd4c2925b179, type: 2}
+    hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
+  - damageDelay: 0.2
+    attackSound: {fileID: 11400000, guid: f11fe43e73ba2b14ea67c5cf4be0e10c, type: 2}
+    hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
   rootOnDamageTime: 0.2
+  knockbackVector: {x: 7, y: 5}
   isSleeping: 0
   pressesToWakeUp: 10
   isMovingRight: 1
@@ -300,3 +346,21 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 2}
   m_Direction: 0
+--- !u!114 &7683289905296613399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7020762558923366422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 941f845f734d3624faa18a6c47263c31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
+  currentHealth: 10
+  spawnOnDamage: []
+  spawnOnDeath: []
+  damageTintColor: {r: 1, g: 0, b: 0, a: 1}
+  damageTintDuration: 0.2
