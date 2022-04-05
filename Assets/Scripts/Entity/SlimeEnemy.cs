@@ -34,10 +34,9 @@ public class SlimeEnemy : EnemyController
             animator.SetFloat("velocityY", rigidbody2D.velocity.y);
         }
 
-        if(nextJumpTime > 0 && Time.time > nextJumpTime)
+        if(grounder.isGrounded && nextJumpTime > 0 && Time.time > nextJumpTime)
         {
             //print("AttemptJump");
-
             nextJumpTime = 0;
             animator.SetTrigger("onJump");
         }
@@ -45,13 +44,15 @@ public class SlimeEnemy : EnemyController
         if(pendingJump)
         {
             pendingJump = false;
-            Vector2 jumpDirection = new Vector2(Random.value > 0.5f ? 1 : -1, 5);
+            Vector2 jumpDirection = new Vector2(0, 5);
             var player = GameManager.Instance.currentPlayer;
-            if (player)
+            if (player && Vector2.Distance(player.transform.position, transform.position) > 10)
             {
                 jumpDirection.x = player.transform.position.x - transform.position.x;
             }
             rigidbody2D.velocity = jumpDirection.normalized * jumpSpeed;
+
+            nextJumpTime = Time.time + Random.Range(4, 6);
         }
     }
 
@@ -65,7 +66,7 @@ public class SlimeEnemy : EnemyController
     void OnGrounded()
     {
         //print("Grounded");
-        nextJumpTime = Time.time + Random.Range(3, 5);
+        
     }
 
 }

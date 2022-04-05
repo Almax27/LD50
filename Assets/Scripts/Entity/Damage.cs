@@ -14,4 +14,5 @@ public class Damage {
     public GameObject owner;
     public FAFAudioSFXSetup hitSFX;
     public Vector2 knockback;
+    public bool consumed;
 }

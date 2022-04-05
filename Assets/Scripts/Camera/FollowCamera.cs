@@ -44,12 +44,6 @@ public class FollowCamera : MonoBehaviour {
         {
             desiredPosition = target.position + offset;
 
-            if (player.grounder.isGrounded && player.grounder.groundedTick > 0.1f && Mathf.Abs(player.rigidbody2D.velocity.y) <= 0.1f)
-            {
-                baseY = target.position.y + offset.y;
-            }
-            desiredPosition.y = baseY;
-
             if (snap)
             {
                 transform.position = desiredPosition;
@@ -58,6 +52,12 @@ public class FollowCamera : MonoBehaviour {
             }
             else
             {
+                if (player.grounder.isGrounded && player.grounder.groundedTick > 0.1f && Mathf.Abs(player.rigidbody2D.velocity.y) <= 0.1f)
+                {
+                    baseY = target.position.y + offset.y;
+                }
+                desiredPosition.y = baseY;
+
                 if (followDamp > 0)
                 {
                     var newPos = Vector3.SmoothDamp(transform.position, desiredPosition, ref followVelocity, followDamp, float.MaxValue, Time.smoothDeltaTime);

@@ -563,6 +563,11 @@ public class PlayerController : MonoBehaviour
             rigidbody2D.velocity = desiredVelocity;
             StunFor(stunDuration);
         }
+        sleepTimer -= 3.0f;
+        if (sleepTimer > 0)
+        {
+            damage.consumed = true;
+        }
         //animator.SetTrigger("onDamage");
     }
 

@@ -44,6 +44,8 @@ public class Health : MonoBehaviour {
 
     public void OnDamage(Damage damage, bool isSilent)
     {
+        if (damage.consumed) return;
+
         currentHealth -= damage.value;
 
         if (!isSilent)
