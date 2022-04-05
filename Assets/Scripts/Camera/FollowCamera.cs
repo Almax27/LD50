@@ -52,7 +52,7 @@ public class FollowCamera : MonoBehaviour {
             }
             else
             {
-                if ((player.grounder.isGrounded && player.grounder.groundedTick > 0.1f && Mathf.Abs(player.rigidbody2D.velocity.y) <= 0.1f))
+                if ((player.grounder.isGrounded && player.grounder.groundedTick > 0.1f && Mathf.Abs(player.rigidbody2D.velocity.y) <= 0.1f)
                     || player.GetComponent<Health>().GetIsDead())
                 {
                     baseY = target.position.y + offset.y;
