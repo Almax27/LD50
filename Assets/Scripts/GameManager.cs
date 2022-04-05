@@ -103,6 +103,6 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         yield return new WaitForSeconds(2.0f);
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        LevelTransition.Instance.TransitionToLevel(SceneManager.GetActiveScene().name);
     }
 }
