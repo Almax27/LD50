@@ -46,7 +46,7 @@ public class SlimeEnemy : EnemyController
             pendingJump = false;
             Vector2 jumpDirection = new Vector2(0, 5);
             var player = GameManager.Instance.currentPlayer;
-            if (player && Vector2.Distance(player.transform.position, transform.position) > 10)
+            if (player && Vector2.Distance(player.transform.position, transform.position) < 10)
             {
                 jumpDirection.x = player.transform.position.x - transform.position.x;
             }

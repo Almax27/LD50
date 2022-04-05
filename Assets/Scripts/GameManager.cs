@@ -93,6 +93,8 @@ public class GameManager : SingletonBehaviour<GameManager>
                 Vector3 scale = stimBar.rectTransform.localScale;
                 scale.x = Mathf.Clamp01(currentPlayer.sleepTimer / currentPlayer.timeToSleep);
                 stimBar.rectTransform.localScale = scale;
+
+                stimBar.color = Color.Lerp(Color.red, Color.white, Mathf.Clamp01(health.TimeSinceLastDamage() / 0.2f));
             }
         }
     }

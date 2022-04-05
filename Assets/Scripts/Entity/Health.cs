@@ -25,6 +25,8 @@ public class Health : MonoBehaviour {
     public bool GetIsDead() { return isDead; }
     public float GetHealth() { return currentHealth; }
 
+    public float TimeSinceLastDamage() { return Time.time - lastDamageTime; }
+
     void Start()
     {
         Reset();

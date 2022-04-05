@@ -566,7 +566,7 @@ public class PlayerController : MonoBehaviour
         sleepTimer -= 3.0f;
         if (sleepTimer > 0)
         {
-            damage.consumed = true;
+            damage.value = 0;
         }
         //animator.SetTrigger("onDamage");
     }

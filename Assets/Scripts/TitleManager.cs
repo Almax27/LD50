@@ -12,6 +12,7 @@ public class TitleManager : MonoBehaviour
 
     public Text text;
 
+    bool canProgress = false;
     bool progress = false;
 
     // Start is called before the first frame update
@@ -20,11 +21,13 @@ public class TitleManager : MonoBehaviour
         StartCoroutine(RunTitleScreen());
 
         FAFAudio.Instance.TryPlayMusic(music);
+
+        if (text) text.enabled = false;
     }
 
     private void Update()
     {
-        if(Input.anyKeyDown)
+        if(canProgress && Input.anyKeyDown)
         {
             progress = true;
         }
@@ -37,10 +40,18 @@ public class TitleManager : MonoBehaviour
 
         titleAnimator.SetTrigger("play");
 
-        while(!progress)
+        yield return new WaitForSeconds(2.0f);
+
+        canProgress = true;
+
+        if (text) text.enabled = true;
+
+        while (!progress)
         {
             yield return new WaitForSeconds(0.1f);
         }
+
+        if (text) text.enabled = false;
 
         SceneManager.LoadScene(firstLevelName);
     }
