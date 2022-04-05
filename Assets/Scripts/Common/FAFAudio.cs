@@ -144,7 +144,7 @@ public class FAFAudio : SingletonBehaviour<FAFAudio>
 
     public bool TryPlayMusic(MusicSetup musicSetup, bool queue = true)
     {
-        if(musicSetup == null || musicSetup == transitioningMusicSetup)
+        if(musicSetup == null || musicSetup == transitioningMusicSetup || (currentMusicSetup != null && currentMusicSetup.clip == musicSetup.clip))
         {
             return false;
         }
