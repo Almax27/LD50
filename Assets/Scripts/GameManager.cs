@@ -73,6 +73,14 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     private void Update()
     {
+#if DEBUG
+        if(Input.GetKeyDown(KeyCode.Backspace))
+        {
+            var levelEndTrigger = FindObjectOfType<LevelEndTrigger>();
+            levelEndTrigger?.CompleteLevel();
+        }
+#endif
+
         if(!isRestarting)
         {
             if(!currentPlayer || currentPlayer.GetComponent<Health>().GetIsDead())

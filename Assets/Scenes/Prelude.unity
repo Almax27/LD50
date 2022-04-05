@@ -224,7 +224,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 747.36, y: 110.7387}
+  m_SizeDelta: {x: 648.7, y: 88.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1220618451
 MonoBehaviour:
@@ -247,7 +247,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 9e35f305a4267e649a1e4fcf05a8ea5f, type: 3}
+    m_Font: {fileID: 12800000, guid: e59657e62cb52e4488e6a6853e824c83, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 1
@@ -260,7 +260,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1.2
   m_Text: "AFTER A PARTICULARLY EXHAUSTING MISSION, \r\n\r\nAKUBI THE NARCOLEPTIC
-    SAMURAI MUST STAY AWAKE LONG ENOUGH TO REACH THE OTHER SIDE OF THE EVIL FOREST."
+    SAMURAI \nMUST STAY AWAKE LONG ENOUGH TO REACH \nTHE OTHER SIDE OF THE EVIL FOREST."
 --- !u!222 &1220618452
 CanvasRenderer:
   m_ObjectHideFlags: 0

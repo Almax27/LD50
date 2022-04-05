@@ -15,7 +15,7 @@ MonoBehaviour:
   Clips:
   - {fileID: 8300000, guid: fdef9e8ca8b2201439cc978fd515c105, type: 3}
   MixerGroup: {fileID: 0}
-  Volume: 1
+  Volume: 0.784
   VolumeVariance: 0
   Pitch: 1
   PitchVariance: 0

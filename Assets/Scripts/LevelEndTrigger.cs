@@ -14,8 +14,13 @@ public class LevelEndTrigger : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            StartCoroutine(LevelComplete_Routine());
+            CompleteLevel();
         }
+    }
+
+    public void CompleteLevel()
+    {
+        StartCoroutine(LevelComplete_Routine());
     }
 
     IEnumerator LevelComplete_Routine()

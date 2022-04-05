@@ -5,6 +5,7 @@ using UnityEngine;
 public class ExpositionManager : MonoBehaviour
 {
     public string nextLevel = "Level_1";
+    public MusicSetup music = new MusicSetup();
 
     bool canProgress = false;
     bool progress = false;
@@ -13,6 +14,8 @@ public class ExpositionManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(Run());
+
+        FAFAudio.Instance.TryPlayMusic(music);
     }
 
     private void Update()

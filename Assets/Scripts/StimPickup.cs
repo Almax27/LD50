@@ -13,7 +13,7 @@ public class StimPickup : MonoBehaviour
     {
         if(collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            var animator = GetComponent<Animator>();
+            var animator = GetComponentInChildren<Animator>();
             if (animator)
             {
                 animator.SetTrigger("onPickup");
