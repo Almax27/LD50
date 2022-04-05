@@ -4,6 +4,7 @@ using System.Collections;
 public class Health : MonoBehaviour {
 
     public float maxHealth = 10;
+    public float startingHealth = 10;
     float currentHealth = 10;
 
     public GameObject[] spawnOnDamage = new GameObject[0];
@@ -22,10 +23,12 @@ public class Health : MonoBehaviour {
     bool isDamageTinted = false;
 
     public bool GetIsDead() { return isDead; }
+    public float GetHealth() { return currentHealth; }
 
     void Start()
     {
         Reset();
+        currentHealth = Mathf.Clamp(startingHealth, 1, maxHealth);
     }
 
     void Reset()
@@ -34,16 +37,24 @@ public class Health : MonoBehaviour {
         isDead = false;
     }
 
-    void OnDamage(Damage damage)
+    public void OnDamage(Damage damage)
+    {
+        OnDamage(damage, false);
+    }
+
+    public void OnDamage(Damage damage, bool isSilent)
     {
         currentHealth -= damage.value;
 
-        foreach (GameObject gobj in spawnOnDamage)
+        if (!isSilent)
         {
-            Instantiate(gobj, this.transform.position, this.transform.rotation);
-        }
+            foreach (GameObject gobj in spawnOnDamage)
+            {
+                Instantiate(gobj, this.transform.position, this.transform.rotation);
+            }
 
-        damageSFX?.Play(transform.position);
+            damageSFX?.Play(transform.position);
+        }
 
         if (!isDead && currentHealth <= 0)
         {
@@ -97,8 +108,17 @@ public class Health : MonoBehaviour {
         currentHealth = Mathf.Max(currentHealth + value, maxHealth);
     }
 
-    public void Kill()
+    public void Kill(bool silent = false)
     {
-        OnDamage(new Damage(maxHealth, null));
+        if (silent)
+        {
+            currentHealth = 0;
+            isDead = true;
+            SendMessage("OnDeath");
+        }
+        else
+        {
+            OnDamage(new Damage(maxHealth, null));
+        }
     }
 }

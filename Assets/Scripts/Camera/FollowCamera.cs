@@ -75,6 +75,7 @@ public class FollowCamera : MonoBehaviour {
         }
         else
         {
+            transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref followVelocity, followDamp, float.MaxValue, Time.smoothDeltaTime);
             snap = true;
         }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
@@ -19,6 +20,9 @@ public class GameManager : SingletonBehaviour<GameManager>
     public MusicSetup gameMusic;
 
     bool isRestarting = false;
+
+    public Text stimText;
+    public Image stimBar;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -73,6 +77,22 @@ public class GameManager : SingletonBehaviour<GameManager>
             {
                 isRestarting = true;
                 StartCoroutine(GameOver_Routine());
+            }
+        }
+
+        if(currentPlayer)
+        {
+            var health = currentPlayer.GetComponent<Health>();
+            if (stimText)
+            {
+                stimText.enabled = false;
+                stimText.text = string.Format("{0}/{1} - {2:0.0}s", health.GetHealth(), health.maxHealth, currentPlayer.sleepTimer);
+            }
+            if(stimBar)
+            {
+                Vector3 scale = stimBar.rectTransform.localScale;
+                scale.x = Mathf.Clamp01(currentPlayer.sleepTimer / currentPlayer.timeToSleep);
+                stimBar.rectTransform.localScale = scale;
             }
         }
     }

@@ -69,11 +69,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 3
+  startingHealth: 10
   spawnOnDamage: []
   damageSFX: {fileID: 0}
   spawnOnDeath: []
   spawnOnDestroy:
   - {fileID: 8706550502472324969, guid: f9182b899dcac614191bdd141616a82f, type: 3}
+  - {fileID: 4624819236624066327, guid: d101b75b9780f2e42b9d3582e4ad98c6, type: 3}
   damageTintColor: {r: 1, g: 0, b: 0, a: 1}
   damageTintDuration: 0.2
   destroyOnDeath: 0.5

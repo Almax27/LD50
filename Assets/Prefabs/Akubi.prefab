@@ -289,7 +289,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  jumpHeight: 4.1
+  jumpHeight: 4.2
   minJumpTime: 0
   maxJumpTime: 0.4
   spawnOnJump: []
@@ -316,8 +316,10 @@ MonoBehaviour:
     hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
   stunDuration: 0.2
   knockbackVector: {x: 7, y: 5}
+  timeToSleep: 10
   isSleeping: 0
   pressesToWakeUp: 10
+  sleepTimer: 0
   isMovingRight: 1
   isLookingRight: 1
   isClimbing: 0
@@ -372,15 +374,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 941f845f734d3624faa18a6c47263c31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10
+  maxHealth: 3
+  startingHealth: 1
   spawnOnDamage: []
   damageSFX: {fileID: 11400000, guid: 08f87809e750b774b9113e202f185825, type: 2}
-  spawnOnDeath:
-  - {fileID: 853264293462487475, guid: 643d27bd8aec3364c98adc7f5f26883b, type: 3}
-  spawnOnDestroy: []
+  spawnOnDeath: []
+  spawnOnDestroy:
+  - {fileID: 8706550502472324969, guid: f9182b899dcac614191bdd141616a82f, type: 3}
   damageTintColor: {r: 1, g: 0, b: 0, a: 1}
   damageTintDuration: 0.2
-  destroyOnDeath: 0
+  destroyOnDeath: 1
 --- !u!114 &6313297037588329702
 MonoBehaviour:
   m_ObjectHideFlags: 0

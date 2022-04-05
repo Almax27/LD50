@@ -65,11 +65,12 @@ public class PlayerController : MonoBehaviour
     public Vector2 knockbackVector = new Vector2(5.0f, 3.0f);
 
     [Header("Sleeping")]
+    public float timeToSleep = 10;
     public bool isSleeping = false;
     public int pressesToWakeUp = 10;
     bool canRecoverFromSleeping = false;
     int wakePresses = 0;
-    float sleepTimer = 0;
+    public float sleepTimer = 0;
 
     [Header("State")]
     public bool isMovingRight = true;
@@ -120,6 +121,8 @@ public class PlayerController : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         jumpsRemaining = maxJumps;
+
+        sleepTimer = timeToSleep;
     }
 
     void Update()
@@ -132,6 +135,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            HandleSleep();
+
             //get input
             xInputRaw = Input.GetAxisRaw("Horizontal");
             xInput = xInputRaw; // Mathf.SmoothDamp(xInput, xInputRaw, ref xInputVel, 0.1f, float.MaxValue, Time.deltaTime);
@@ -140,7 +145,7 @@ public class PlayerController : MonoBehaviour
             wantsJump = Input.GetButton("Jump");
             if (jumpPendingRelease && !wantsJump) jumpPendingRelease = false;
 
-            if (Input.GetKeyDown(KeyCode.S))
+            if(Input.GetButtonDown("UseItem"))
             {
                 if (isSleeping && canRecoverFromSleeping)
                 {
@@ -153,7 +158,12 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    Sleep();
+                    var health = GetComponent<Health>();
+                    if (health.GetHealth() > 1)
+                    {
+                        health.OnDamage(new Damage(1, gameObject), true);
+                        sleepTimer = timeToSleep;
+                    }
                 }
             }
 
@@ -254,6 +264,19 @@ public class PlayerController : MonoBehaviour
 
         desiredVelocity.y = Mathf.Max(desiredVelocity.y, -maxFallingSpeedY);
         rigidbody2D.velocity = desiredVelocity;
+    }
+
+    void HandleSleep()
+    {
+        sleepTimer -= Time.deltaTime;
+        if(!isSleeping && sleepTimer <= 0)
+        {
+            Sleep();
+        }
+        else if (sleepTimer < -3 && !GetComponent<Health>().GetIsDead())
+        {
+            GetComponent<Health>().Kill(true);
+        }
     }
 
     MeleeAttack GetCurrentAttack()
@@ -575,6 +598,7 @@ public class PlayerController : MonoBehaviour
         isSleeping = false;
         wakePresses = 0;
         canRecoverFromSleeping = false;
+        sleepTimer = timeToSleep;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
