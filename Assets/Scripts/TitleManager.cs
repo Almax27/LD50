@@ -53,6 +53,6 @@ public class TitleManager : MonoBehaviour
 
         if (text) text.enabled = false;
 
-        SceneManager.LoadScene(firstLevelName);
+        LevelTransition.Instance.TransitionToLevel(firstLevelName);
     }
 }

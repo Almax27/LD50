@@ -28,7 +28,7 @@ public class LevelEndTrigger : MonoBehaviour
 
         yield return new WaitForSeconds(3.0f);
 
-        SceneManager.LoadScene(targetLevel);
+        LevelTransition.Instance.TransitionToLevel(targetLevel);
     }
 
     private void OnDrawGizmos()
