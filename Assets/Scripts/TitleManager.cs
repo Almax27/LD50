@@ -11,6 +11,7 @@ public class TitleManager : MonoBehaviour
     public MusicSetup music;
 
     public FAFAudioSFXSetup onStartSFX;
+    public FAFAudioSFXSetup onTitleAnimSFX;
 
     public Text text;
 
@@ -52,6 +53,7 @@ public class TitleManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
 
         titleAnimator.SetTrigger("play");
+        onTitleAnimSFX?.Play(Camera.main.transform.position);
 
         yield return new WaitForSeconds(3.0f);
 
