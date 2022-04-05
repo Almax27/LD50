@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 780040306404834592}
   - component: {fileID: 903673202576485103}
   - component: {fileID: -524032676483122124}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: StimPickup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
