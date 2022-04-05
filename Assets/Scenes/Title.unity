@@ -223,7 +223,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9e35f305a4267e649a1e4fcf05a8ea5f, type: 3}
     m_FontSize: 52
     m_FontStyle: 0
     m_BestFit: 1
@@ -235,7 +235,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Press to start
+  m_Text: PRESS TO START
 --- !u!222 &140296303
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -260,8 +260,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 64.6}
-  m_SizeDelta: {x: 400, y: 50}
+  m_AnchoredPosition: {x: 0, y: 37}
+  m_SizeDelta: {x: 245.28, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &237710536
 GameObject:
@@ -331,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -354,7 +354,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -380,6 +380,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 54626909447487373, guid: bc058b53c50755048a4416eac3267e94, type: 3}
+      propertyPath: m_PixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 54626909447487373, guid: bc058b53c50755048a4416eac3267e94, type: 3}
+      propertyPath: m_SortingOrder
+      value: 99
+      objectReference: {fileID: 0}
     - target: {fileID: 1281855902891071047, guid: bc058b53c50755048a4416eac3267e94, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -423,6 +431,14 @@ PrefabInstance:
     - target: {fileID: 1281855902891071047, guid: bc058b53c50755048a4416eac3267e94, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2577505441756573833, guid: bc058b53c50755048a4416eac3267e94, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3173017638740371512, guid: bc058b53c50755048a4416eac3267e94, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8984990890483517566, guid: bc058b53c50755048a4416eac3267e94, type: 3}
       propertyPath: m_Name
@@ -598,7 +614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a21115686236fc47bc9fa5123a52465, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstLevelName: Level_1
+  firstLevelName: Prelude
   titleAnimator: {fileID: 351153080}
   music:
     clip: {fileID: 8300000, guid: 0bbdc96edf972a444a64f6e44ea9e069, type: 3}
@@ -607,6 +623,7 @@ MonoBehaviour:
     fadeIn: 1
     fadeOut: 1
     transitionMode: 1
+  onStartSFX: {fileID: 11400000, guid: 5b1abc40f0937f445a770348c91806cb, type: 2}
   text: {fileID: 140296302}
 --- !u!4 &1567790673
 Transform:

@@ -19,6 +19,8 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     public MusicSetup gameMusic;
 
+    public FAFAudioSFXSetup gameOverSFX;
+
     bool isRestarting = false;
 
     public Text stimText;
@@ -101,6 +103,8 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     IEnumerator GameOver_Routine()
     {
+        gameOverSFX?.Play(Camera.main.transform.position);
+
         yield return new WaitForSeconds(2.0f);
 
         LevelTransition.Instance.TransitionToLevel(SceneManager.GetActiveScene().name);

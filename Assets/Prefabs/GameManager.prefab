@@ -333,6 +333,7 @@ MonoBehaviour:
     fadeIn: 1
     fadeOut: 1
     transitionMode: 1
+  gameOverSFX: {fileID: 11400000, guid: 4406ae7cecb7268488a3b7da1f4cc740, type: 2}
   stimText: {fileID: 8754005375931197686}
   stimBar: {fileID: 2206270824975182405}
 --- !u!1 &8867580311134634414

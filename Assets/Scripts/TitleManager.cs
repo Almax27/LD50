@@ -10,6 +10,8 @@ public class TitleManager : MonoBehaviour
     public Animator titleAnimator;
     public MusicSetup music;
 
+    public FAFAudioSFXSetup onStartSFX;
+
     public Text text;
 
     bool canProgress = false;
@@ -22,14 +24,25 @@ public class TitleManager : MonoBehaviour
 
         FAFAudio.Instance.TryPlayMusic(music);
 
-        if (text) text.enabled = false;
+        if (text)
+        {
+            text.enabled = false;
+            text.color = new Color(1, 1, 1, 0);
+        }
     }
 
     private void Update()
     {
-        if(canProgress && Input.anyKeyDown)
+        if(!progress && canProgress && Input.anyKeyDown)
         {
             progress = true;
+            onStartSFX?.Play(Camera.main.transform.position);
+        }
+        if (text && text.enabled)
+        {
+            Color c = text.color;
+            c.a = Mathf.Clamp01(c.a + Time.deltaTime);
+            text.color = c;
         }
     }
 
@@ -40,7 +53,7 @@ public class TitleManager : MonoBehaviour
 
         titleAnimator.SetTrigger("play");
 
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(3.0f);
 
         canProgress = true;
 
@@ -52,6 +65,8 @@ public class TitleManager : MonoBehaviour
         }
 
         if (text) text.enabled = false;
+
+        yield return new WaitForSeconds(1.0f);
 
         LevelTransition.Instance.TransitionToLevel(firstLevelName);
     }

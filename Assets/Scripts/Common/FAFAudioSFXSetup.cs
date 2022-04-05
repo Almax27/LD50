@@ -14,7 +14,7 @@ public class FAFAudioSFXSetup : ScriptableObject {
     [Range(0, 1)] public float PitchVariance = 0.0f;
     [Range(0, 1)] public float SpatialBlend = 0.0f;
 
-    public AudioSource Play(Vector3 _pos, float _volumeScalar = 1.0f, float _pitchScalar = 1.0f, float _pitchOffset = 1.0f)
+    public AudioSource Play(Vector3 _pos, float _volumeScalar = 1.0f, float _pitchScalar = 1.0f, float _pitchOffset = 0.0f)
     {
         AudioSource source = null;
         if (Clips != null && Clips.Count > 0)
