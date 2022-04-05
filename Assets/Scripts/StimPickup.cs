@@ -25,7 +25,8 @@ public class StimPickup : MonoBehaviour
 
             if(autoUse)
             {
-                GameManager.Instance.currentPlayer.sleepTimer = GameManager.Instance.currentPlayer.timeToSleep;
+                GameManager.Instance.currentPlayer.sleepTimer = 0;
+                GameManager.Instance.currentPlayer.lastStimTime = Time.time;
             }
             else
             {

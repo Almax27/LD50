@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float groundSpeed = 12.0f;
     public float airSpeed = 6.0f;
-    public float idleSpeed = 5.0f;
+    public float idleSpeed = 1.0f;
     public float climbingSpeed = 0.2f;
     public float maxFallingSpeedY = 20;
     public bool allowMoveToCancelClimb = false;
@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
     bool canRecoverFromSleeping = false;
     int wakePresses = 0;
     public float sleepTimer = 0;
+    public float lastStimTime = 0;
 
     [Header("State")]
     public bool isMovingRight = true;
@@ -121,12 +122,13 @@ public class PlayerController : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         jumpsRemaining = maxJumps;
-
-        sleepTimer = timeToSleep;
     }
 
     void Update()
     {
+        if (GameManager.Instance.isPaused)
+            return;
+
         isAttacking = lastAttackTime > 0;
 
         if (levelComplete)
@@ -162,7 +164,7 @@ public class PlayerController : MonoBehaviour
                     if (health.GetHealth() > 1)
                     {
                         health.OnDamage(new Damage(1, gameObject), true);
-                        sleepTimer = timeToSleep;
+                        sleepTimer = 0;
                     }
                 }
             }
@@ -194,11 +196,12 @@ public class PlayerController : MonoBehaviour
 
         HandleAttacking();
 
-        bool isMoving = Mathf.Abs(rigidbody2D.velocity.x) > idleSpeed;
+        bool isMovingAgainstVelocity = xInput != 0 && Mathf.Sign(rigidbody2D.velocity.x) != Mathf.Sign(xInput);
+        bool isMoving = Mathf.Abs(rigidbody2D.velocity.x) > idleSpeed || isMovingAgainstVelocity;
 
         animator.SetFloat("moveSpeed", isMoving ? Mathf.Abs(rigidbody2D.velocity.x / groundSpeed) : 0);
         animator.SetFloat("velocityY", desiredVelocity.y);
-        animator.SetBool("isIdle", !isMoving && !isAttacking);
+        animator.SetBool("isIdle", xInput == 0 && grounder.isGrounded && !isMoving && !isAttacking);
         animator.SetBool("isAttacking", isAttacking);
         animator.SetBool("isSleeping", isSleeping);
     }
@@ -266,14 +269,19 @@ public class PlayerController : MonoBehaviour
         rigidbody2D.velocity = desiredVelocity;
     }
 
+    public float TimeSinceLastStim()
+    {
+        return lastStimTime > 0 ? Time.time - lastStimTime : -1;
+    }
+
     void HandleSleep()
     {
-        sleepTimer -= Time.deltaTime;
-        if(!isSleeping && sleepTimer <= 0)
+        sleepTimer += Time.deltaTime;
+        if(!isSleeping && sleepTimer > timeToSleep)
         {
             Sleep();
         }
-        else if (sleepTimer < -3 && !GetComponent<Health>().GetIsDead())
+        else if (sleepTimer > timeToSleep + 3 && !GetComponent<Health>().GetIsDead())
         {
             GetComponent<Health>().Kill(true);
         }
@@ -471,20 +479,22 @@ public class PlayerController : MonoBehaviour
 
                 desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.1f, float.MaxValue, Time.fixedDeltaTime);
             }
-
             else if (xInput != 0)
             {
                 desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.2f, float.MaxValue, Time.fixedDeltaTime);
             }
             else
             {
-                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.15f, float.MaxValue, Time.fixedDeltaTime);
+                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, isGrounded ? 0.05f : 0.5f, float.MaxValue, Time.fixedDeltaTime);
             }
         }
         else
         {
             xInput = 0;
-            desiredVelocity = Vector2.SmoothDamp(desiredVelocity, new Vector2(0, desiredVelocity.y), ref acceleration, isAttacking ? 0.2f : 0.05f, float.MaxValue, Time.fixedDeltaTime);
+            if (isGrounded)
+            {
+                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, new Vector2(0, desiredVelocity.y), ref acceleration, 0.2f, float.MaxValue, Time.fixedDeltaTime);
+            }
         }
     }
 
@@ -563,8 +573,8 @@ public class PlayerController : MonoBehaviour
             rigidbody2D.velocity = desiredVelocity;
             StunFor(stunDuration);
         }
-        sleepTimer -= 3.0f;
-        if (sleepTimer > 0)
+        sleepTimer += 3.0f;
+        if (sleepTimer > timeToSleep)
         {
             damage.value = 0;
         }
@@ -603,7 +613,7 @@ public class PlayerController : MonoBehaviour
         isSleeping = false;
         wakePresses = 0;
         canRecoverFromSleeping = false;
-        sleepTimer = timeToSleep;
+        sleepTimer = 0;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

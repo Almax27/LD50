@@ -18,6 +18,8 @@ namespace Aseprite2Unity.Editor
 
         // Editor fields
         public float m_PixelsPerUnit = 100.0f;
+        public SpriteMeshType m_meshType = SpriteMeshType.Tight;
+        public uint m_meshExtrude = 0;
         public SpriteAtlas m_SpriteAtlas;
         public float m_FrameRate = 60.0f;
         public GameObject m_InstantiatedPrefab;
@@ -163,7 +165,7 @@ namespace Aseprite2Unity.Editor
 
             // Make a sprite out of the texture
             var pivot = m_Pivot ?? new Vector2(0.5f, 0.5f);
-            var sprite = Sprite.Create(m_Texture2D, new Rect(0, 0, m_Texture2D.width, m_Texture2D.height), pivot, m_PixelsPerUnit);
+            var sprite = Sprite.Create(m_Texture2D, new Rect(0, 0, m_Texture2D.width, m_Texture2D.height), pivot, m_PixelsPerUnit, m_meshExtrude, m_meshType);
             sprite.name = string.Format("{0}.Sprites._{1}", Path.GetFileNameWithoutExtension(assetPath), m_Sprites.Count);
             m_Sprites.Add(sprite);
             m_Context.AddObjectToAsset(sprite.name, sprite);

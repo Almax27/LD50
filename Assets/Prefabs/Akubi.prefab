@@ -254,7 +254,7 @@ MonoBehaviour:
   climbGrounder: {fileID: 0}
   groundSpeed: 10
   airSpeed: 6
-  idleSpeed: 5
+  idleSpeed: 1
   climbingSpeed: 0.2
   maxFallingSpeedY: 20
   allowMoveToCancelClimb: 0
@@ -320,6 +320,7 @@ MonoBehaviour:
   isSleeping: 0
   pressesToWakeUp: 10
   sleepTimer: 0
+  lastStimTime: 0
   isMovingRight: 1
   isLookingRight: 1
   isClimbing: 0

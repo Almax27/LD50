@@ -43,6 +43,12 @@ namespace Aseprite2Unity.Editor
                 EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AsepriteImporter.m_PixelsPerUnit)),
                     new GUIContent("Pixels Per Unit", "How many pixels make up a unit. Default is 100. Use this the same as you would in the Texture Importer settings for sprites."));
 
+                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AsepriteImporter.m_meshType)),
+                    new GUIContent("Mesh Type", "Controls the type of mesh generated for the sprite."));
+
+                EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AsepriteImporter.m_meshExtrude)),
+                    new GUIContent("Mesh Extrude", "Amount by which the sprite mesh should be expanded outwards."));
+
                 EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AsepriteImporter.m_SpriteAtlas)),
                     new GUIContent("Sprite Atlas", "The sprites created by this import will be made part of this sprite atlas."));
 

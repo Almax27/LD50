@@ -22,14 +22,19 @@ public class GameManager : SingletonBehaviour<GameManager>
     public FAFAudioSFXSetup gameOverSFX;
 
     bool isRestarting = false;
+    public bool isPaused { get; private set; }
 
     public Text stimText;
     public Image stimBar;
+    public CanvasGroup pauseCanvasGroup;
 
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         var playerGO = GameObject.Instantiate(playerToSpawn, playerSpawnPoint.position, playerSpawnPoint.rotation);
         currentPlayer = playerGO.GetComponent<PlayerController>();
@@ -101,12 +106,49 @@ public class GameManager : SingletonBehaviour<GameManager>
             if(stimBar)
             {
                 Vector3 scale = stimBar.rectTransform.localScale;
-                scale.x = Mathf.Clamp01(currentPlayer.sleepTimer / currentPlayer.timeToSleep);
+                scale.x = 1 - Mathf.Clamp01(currentPlayer.sleepTimer / currentPlayer.timeToSleep);
                 stimBar.rectTransform.localScale = scale;
 
-                stimBar.color = Color.Lerp(Color.red, Color.white, Mathf.Clamp01(health.TimeSinceLastDamage() / 0.2f));
+                float timeSinceStim = currentPlayer.TimeSinceLastStim();
+                float timeSinceDamage = health.TimeSinceLastDamage();
+                Color fromColor = Color.white;
+                float tVal = 1;
+                if (timeSinceDamage >= 0 && timeSinceDamage < 0.3f)
+                {
+                    fromColor = Color.red;
+                    tVal = timeSinceDamage / 0.3f;
+                }
+                else if(timeSinceStim >= 0 && timeSinceStim < 0.5f)
+                {
+                    fromColor = Color.yellow;
+                    tVal = timeSinceStim / 0.5f;
+                }
+                stimBar.color = Color.Lerp(fromColor, Color.white, Mathf.Clamp01(tVal));
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            isPaused = !isPaused;
+            if (isPaused)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                Time.timeScale = 1;
+            }
+        }
+
+        if(pauseCanvasGroup)
+        {
+            pauseCanvasGroup.alpha = Mathf.Clamp01(pauseCanvasGroup.alpha + (isPaused ? Time.unscaledDeltaTime : -Time.unscaledDeltaTime) * 5.0f);
+        }
+
     }
 
     IEnumerator GameOver_Routine()
