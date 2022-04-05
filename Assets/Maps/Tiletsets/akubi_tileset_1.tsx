@@ -1138,6 +1138,7 @@
    <wangcolor name="Slime" color="#00ff00" tile="-1" probability="1"/>
    <wangcolor name="Ice" color="#0000ff" tile="-1" probability="1"/>
    <wangcolor name="Cave" color="#ff7700" tile="-1" probability="1"/>
+   <wangcolor name="Bushes" color="#00e9ff" tile="-1" probability="1"/>
    <wangtile tileid="46" wangid="0,0,0,1,0,0,0,0"/>
    <wangtile tileid="47" wangid="0,0,0,1,0,1,0,0"/>
    <wangtile tileid="48" wangid="0,0,0,0,0,1,0,0"/>
@@ -1188,6 +1189,19 @@
    <wangtile tileid="370" wangid="0,4,0,4,0,4,0,4"/>
    <wangtile tileid="371" wangid="0,4,0,4,0,4,0,4"/>
    <wangtile tileid="372" wangid="0,4,0,4,0,4,0,4"/>
+   <wangtile tileid="554" wangid="0,0,0,5,0,0,0,0"/>
+   <wangtile tileid="555" wangid="0,0,0,5,0,5,0,0"/>
+   <wangtile tileid="556" wangid="0,0,0,0,0,5,0,0"/>
+   <wangtile tileid="557" wangid="0,5,0,0,0,5,0,5"/>
+   <wangtile tileid="558" wangid="0,5,0,5,0,0,0,5"/>
+   <wangtile tileid="599" wangid="0,5,0,5,0,0,0,0"/>
+   <wangtile tileid="600" wangid="0,5,0,5,0,5,0,5"/>
+   <wangtile tileid="601" wangid="0,0,0,0,0,5,0,5"/>
+   <wangtile tileid="602" wangid="0,0,0,5,0,5,0,5"/>
+   <wangtile tileid="603" wangid="0,5,0,5,0,5,0,0"/>
+   <wangtile tileid="644" wangid="0,5,0,0,0,0,0,0"/>
+   <wangtile tileid="645" wangid="0,5,0,0,0,0,0,5"/>
+   <wangtile tileid="646" wangid="0,0,0,0,0,0,0,5"/>
   </wangset>
  </wangsets>
 </tileset>
