@@ -1170,25 +1170,16 @@
    <wangtile tileid="277" wangid="0,0,0,4,0,0,0,0"/>
    <wangtile tileid="278" wangid="0,0,0,4,0,4,0,0"/>
    <wangtile tileid="279" wangid="0,0,0,0,0,4,0,0"/>
-   <wangtile tileid="280" wangid="0,4,0,4,0,4,0,4"/>
-   <wangtile tileid="281" wangid="0,4,0,4,0,4,0,4"/>
-   <wangtile tileid="282" wangid="0,4,0,4,0,4,0,4"/>
    <wangtile tileid="283" wangid="0,4,0,0,0,4,0,4"/>
    <wangtile tileid="284" wangid="0,4,0,4,0,0,0,4"/>
    <wangtile tileid="322" wangid="0,4,0,4,0,0,0,0"/>
    <wangtile tileid="323" wangid="0,4,0,4,0,4,0,4"/>
    <wangtile tileid="324" wangid="0,0,0,0,0,4,0,4"/>
-   <wangtile tileid="325" wangid="0,4,0,4,0,4,0,4"/>
-   <wangtile tileid="326" wangid="0,4,0,4,0,4,0,4"/>
-   <wangtile tileid="327" wangid="0,4,0,4,0,4,0,4"/>
    <wangtile tileid="328" wangid="0,0,0,4,0,4,0,4"/>
    <wangtile tileid="329" wangid="0,4,0,4,0,4,0,0"/>
    <wangtile tileid="367" wangid="0,4,0,0,0,0,0,0"/>
    <wangtile tileid="368" wangid="0,4,0,0,0,0,0,4"/>
    <wangtile tileid="369" wangid="0,0,0,0,0,0,0,4"/>
-   <wangtile tileid="370" wangid="0,4,0,4,0,4,0,4"/>
-   <wangtile tileid="371" wangid="0,4,0,4,0,4,0,4"/>
-   <wangtile tileid="372" wangid="0,4,0,4,0,4,0,4"/>
    <wangtile tileid="554" wangid="0,0,0,5,0,0,0,0"/>
    <wangtile tileid="555" wangid="0,0,0,5,0,5,0,0"/>
    <wangtile tileid="556" wangid="0,0,0,0,0,5,0,0"/>
