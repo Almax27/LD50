@@ -105,6 +105,8 @@ public class GameManager : SingletonBehaviour<GameManager>
             }
             if(stimBar)
             {
+                stimBar.enabled = true;
+
                 Vector3 scale = stimBar.rectTransform.localScale;
                 scale.x = 1 - Mathf.Clamp01(currentPlayer.sleepTimer / currentPlayer.timeToSleep);
                 stimBar.rectTransform.localScale = scale;
@@ -125,6 +127,10 @@ public class GameManager : SingletonBehaviour<GameManager>
                 }
                 stimBar.color = Color.Lerp(fromColor, Color.white, Mathf.Clamp01(tVal));
             }
+        }
+        else
+        {
+            if(stimBar) stimBar.enabled = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))

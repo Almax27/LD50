@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 451a57b578f363f499c065777dd84276, type: 3}
-  m_Name: SFX_PlayerTakeDamage
+  m_Name: SFX_PlayerDeath
   m_EditorClassIdentifier: 
   Clips:
-  - {fileID: 8300000, guid: 12122347c0159ff4d89f01329b6d6700, type: 3}
-  - {fileID: 8300000, guid: d613490bfae25c7488ce09de908058ce, type: 3}
+  - {fileID: 8300000, guid: 3e17ccc48e2d05b44b398b59cb171c51, type: 3}
   MixerGroup: {fileID: 0}
   Volume: 1
   VolumeVariance: 0
-  Pitch: 0.76
+  Pitch: 1
   PitchVariance: 0.1
   SpatialBlend: 0

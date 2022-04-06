@@ -533,7 +533,7 @@ MonoBehaviour:
   currentPlayer: {fileID: 0}
   gameMusic:
     clip: {fileID: 8300000, guid: 93736961ebfd9ca40b6a6cf2a28520c7, type: 3}
-    volume: 1
+    volume: 0.6
     loop: 1
     fadeIn: 1
     fadeOut: 1

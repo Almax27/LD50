@@ -38,7 +38,7 @@ public class Grounder : MonoBehaviour {
 
     public RaycastHit2D GetGroundHit()
     {
-        return Physics2D.CircleCast(transform.parent.position, Mathf.Max(size.x, size.y), Vector2.down, Mathf.Abs(transform.localPosition.y + size.y), groundMask);
+        return Physics2D.BoxCast(transform.parent.position, size, 0, Vector2.down, Mathf.Abs(transform.localPosition.y), groundMask);
     }
 
     void OnDrawGizmos()

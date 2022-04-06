@@ -256,7 +256,8 @@ MonoBehaviour:
   airSpeed: 6
   idleSpeed: 1
   climbingSpeed: 0.2
-  maxFallingSpeedY: 20
+  maxFallingSpeedY: 30
+  maxFloorSlopeAngle: 60
   allowMoveToCancelClimb: 0
   groundedPhysicsMaterial: {fileID: 6200000, guid: 645178ab8f700d34eb3451c648d8b436, type: 2}
   airPhysicsMaterial: {fileID: 6200000, guid: cb1220d668d0a4343a80076c4a46c6c7, type: 2}
@@ -264,7 +265,7 @@ MonoBehaviour:
   footStepAudio: {fileID: 11400000, guid: 7095dac937fbf4c4f9dfdc524ce3a39f, type: 2}
   jumpAudio: {fileID: 11400000, guid: eb78611996b4f2c40ae5c5b4e282257e, type: 2}
   landAudio: {fileID: 11400000, guid: 258c70e2aa448bd40bead4305d9712a1, type: 2}
-  gravity: 120
+  gravity: 60
   jumpCurve:
     serializedVersion: 2
     m_Curve:
@@ -290,7 +291,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   jumpHeight: 4.3
-  minJumpTime: 0
+  minJumpTime: 0.1
   maxJumpTime: 0.4
   spawnOnJump: []
   climbExitTime: 0.2
@@ -298,18 +299,21 @@ MonoBehaviour:
   meleeAttacks:
   - damage: 1
     damageDelay: 0.2
+    nextAttackDelay: 0.2
     playerSpeedX: 5
     knockback: {x: 5, y: 3}
     attackSound: {fileID: 11400000, guid: fa00dda6c8f25c34a928b09d524cd003, type: 2}
     hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
   - damage: 1
     damageDelay: 0.2
+    nextAttackDelay: 0.5
     playerSpeedX: 15
     knockback: {x: 1, y: 7}
     attackSound: {fileID: 11400000, guid: 18212870aaefb164e825fd4c2925b179, type: 2}
     hitSound: {fileID: 11400000, guid: 010adbd309f0a8143ba5cfc6e73c4490, type: 2}
   - damage: 2
     damageDelay: 0.2
+    nextAttackDelay: 0.6
     playerSpeedX: 3
     knockback: {x: 7, y: 5}
     attackSound: {fileID: 11400000, guid: f11fe43e73ba2b14ea67c5cf4be0e10c, type: 2}
@@ -381,7 +385,7 @@ MonoBehaviour:
   damageSFX: {fileID: 11400000, guid: 08f87809e750b774b9113e202f185825, type: 2}
   spawnOnDeath: []
   spawnOnDestroy:
-  - {fileID: 8706550502472324969, guid: f9182b899dcac614191bdd141616a82f, type: 3}
+  - {fileID: 1878401954793319320, guid: f09eba67b194fe448990e2c69f7e6fc9, type: 3}
   damageTintColor: {r: 1, g: 0, b: 0, a: 1}
   damageTintDuration: 0.2
   destroyOnDeath: 1

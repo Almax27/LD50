@@ -7,6 +7,7 @@ public class MeleeAttack
 {
     public float damage;
     public float damageDelay = 0.3f;
+    public float nextAttackDelay = 0.3f;
 
     public float playerSpeedX = 10.0f;
 
@@ -37,6 +38,7 @@ public class PlayerController : MonoBehaviour
     public float idleSpeed = 1.0f;
     public float climbingSpeed = 0.2f;
     public float maxFallingSpeedY = 20;
+    public float maxFloorSlopeAngle = 60;
     public bool allowMoveToCancelClimb = false;
     public PhysicsMaterial2D groundedPhysicsMaterial;
     public PhysicsMaterial2D airPhysicsMaterial;
@@ -100,8 +102,9 @@ public class PlayerController : MonoBehaviour
 
     bool isAttacking = false;
     bool pendingAttackDamage = false;
-    float lastAttackTime = 0;
-    int attackComboIndex = 0;
+    float attackStartTime = 0;
+    int attackComboIndex = -1;
+    float attackInputTime = 0;
 
     float lastClimbTime = 0;
     float lastDamageTime = 0;
@@ -109,6 +112,7 @@ public class PlayerController : MonoBehaviour
     Vector2 lastPosition;
     Vector2 desiredVelocity;
     Vector2 acceleration;
+    Dictionary<string, float> speedBoosts = new Dictionary<string, float>();
 
     float stunnedUntilTime;
 
@@ -129,7 +133,11 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance.isPaused)
             return;
 
-        isAttacking = lastAttackTime > 0;
+#if DEBUG
+        HandleDebugInput();
+#endif
+
+        isAttacking = GetCurrentAttack() != null;
 
         if (levelComplete)
         {
@@ -169,28 +177,9 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            if (CanAttack() && Input.GetButtonDown("Attack"))
+            if(Input.GetButtonDown("Attack"))
             {
-                // if(isAttacking) attackComboIndex++;
-
-                animator.SetTrigger("onAttack");
-                lastAttackTime = Time.time;
-                pendingAttackDamage = true;
-
-                if (xInputRaw != 0) isLookingRight = xInputRaw > 0;
-
-                var currentAttack = GetCurrentAttack();
-                if (meleeAttackBox && currentAttack != null)
-                {
-                    if (meleeAttackBox)
-                    {
-                        float attackMoveSpeed = currentAttack.playerSpeedX * (meleeAttackBox.IsTargetInRange() ? 0.5f : 1.0f);
-                        desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, attackMoveSpeed) : Mathf.Min(desiredVelocity.x, -attackMoveSpeed), desiredVelocity.y);
-                    }
-
-                    currentAttack.attackSound?.Play(transform.position);
-                    meleeAttackBox.DealDamage(new Damage(currentAttack.damage, gameObject, currentAttack.hitSound, currentAttack.knockback), currentAttack.damageDelay);
-                }
+                attackInputTime = Time.time;
             }
         }
 
@@ -211,19 +200,17 @@ public class PlayerController : MonoBehaviour
         var isGrounded = grounder ? grounder.isGrounded : false;
         var isClimbGrounded = climbGrounder ? climbGrounder.isGrounded : false;
 
-        //apply gravity
-        if (isGrounded)
+        bool airAttackHang = false;
+        var currentAttack = GetCurrentAttack();
+        if(currentAttack != null && meleeAttackBox)
         {
-            //desiredVelocity.y = 0;
+            airAttackHang = meleeAttackBox.lastHitTime > 0 && Time.time - meleeAttackBox.lastHitTime < Mathf.Max(currentAttack.nextAttackDelay - 0.2f, 0.1f);
         }
-        else if (!isClimbing && !isJumping)
+
+        //apply gravity
+        if (!isGrounded && !isClimbing && !isJumping)
         {
-            float gravityMultipler = 1.0f;
-            if(pendingAttackDamage && attackComboIndex == 0 && desiredVelocity.y < 0)
-            {
-                gravityMultipler = 0;
-            }
-            desiredVelocity.y -= gravity * Time.fixedDeltaTime * gravityMultipler;
+            desiredVelocity.y -= gravity * Time.fixedDeltaTime * (airAttackHang ? 0.1f : 1.0f);
         }
 
         capsuleCollider2D.sharedMaterial = isGrounded ? groundedPhysicsMaterial : airPhysicsMaterial;
@@ -269,6 +256,22 @@ public class PlayerController : MonoBehaviour
         rigidbody2D.velocity = desiredVelocity;
     }
 
+    void HandleDebugInput()
+    {
+        if(Input.GetKeyDown(KeyCode.KeypadPlus))
+        {
+            timeToSleep += 60;
+        }
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            speedBoosts.Add("DebugSprint", 3.0f);
+        }
+        else if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            speedBoosts.Remove("DebugSprint");
+        }
+    }
+
     public float TimeSinceLastStim()
     {
         return lastStimTime > 0 ? Time.time - lastStimTime : -1;
@@ -281,7 +284,7 @@ public class PlayerController : MonoBehaviour
         {
             Sleep();
         }
-        else if (sleepTimer > timeToSleep + 3 && !GetComponent<Health>().GetIsDead())
+        else if (isSleeping && sleepTimer > timeToSleep + 2.0f && !GetComponent<Health>().GetIsDead())
         {
             GetComponent<Health>().Kill(true);
         }
@@ -289,7 +292,7 @@ public class PlayerController : MonoBehaviour
 
     MeleeAttack GetCurrentAttack()
     {
-        if (meleeAttacks.Length > 0 && attackComboIndex < meleeAttacks.Length)
+        if (meleeAttacks.Length > 0 && attackComboIndex >= 0 && attackComboIndex < meleeAttacks.Length)
         {
             return meleeAttacks[attackComboIndex];
         }
@@ -298,20 +301,60 @@ public class PlayerController : MonoBehaviour
 
     bool CanAttack()
     {
-        return !isSleeping && !pendingAttackDamage && attackComboIndex < 3 && !IsStunned();
+        var currentAttack = GetCurrentAttack();
+        return !isSleeping && !pendingAttackDamage && !IsStunned() && (currentAttack == null || Time.time - attackStartTime > currentAttack.nextAttackDelay);
     }
 
     void HandleAttacking()
     {
-        if (lastAttackTime > 0)
+        var currentAttack = GetCurrentAttack();
+
+        //Start attack
+        bool wantsAttack = attackInputTime > 0 && Time.time - attackInputTime < 0.3f;
+        if (CanAttack() && wantsAttack)
         {
-            float attackTime = Time.time - lastAttackTime;
+            attackComboIndex++;
+            if (attackComboIndex >= meleeAttacks.Length)
+                attackComboIndex = 0;
+
+            currentAttack = GetCurrentAttack();
+
+            attackInputTime = 0;
+
+            if(attackComboIndex == 0)
+            {
+                animator.SetTrigger("onAttack");
+            }
+            else
+            {
+                animator.SetTrigger("onAttackCombo");
+            }
+
+            attackStartTime = Time.time;
+            pendingAttackDamage = true;
+
+            if (xInputRaw != 0) isLookingRight = xInputRaw > 0;
+
+            if (meleeAttackBox && currentAttack != null)
+            {
+                currentAttack.attackSound?.Play(transform.position);
+                meleeAttackBox.DealDamage(new Damage(currentAttack.damage, gameObject, currentAttack.hitSound, currentAttack.knockback), currentAttack.damageDelay);
+
+                if (grounder.isGrounded && !meleeAttackBox.IsTargetInRange(Vector2.one * -2.0f))
+                {
+                    desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, currentAttack.playerSpeedX) : Mathf.Min(desiredVelocity.x, -currentAttack.playerSpeedX), desiredVelocity.y);
+                }
+            }
+        }
+
+        if (currentAttack != null)
+        {
+            float attackTime = Time.time - attackStartTime;
 
             //Reset attack
             if (attackTime > 0.6f) 
             {
-                lastAttackTime = 0;
-                attackComboIndex = 0;
+                attackComboIndex = -1;
                 pendingAttackDamage = false;
             }
             //Trigger damage
@@ -321,7 +364,6 @@ public class PlayerController : MonoBehaviour
                 {
                     animator.ResetTrigger("onAttack");
                     pendingAttackDamage = false;
-                    attackComboIndex++;
                 }
             }
         }
@@ -384,14 +426,10 @@ public class PlayerController : MonoBehaviour
     void HandleJumping(bool isGrounded)
     {
         //Reset jump
-        if (!wantsJump && jumpTick >= minJumpTime && (isGrounded || isClimbing))
+        if (!isJumping && jumpsRemaining != maxJumps && (isGrounded || isClimbing))
         {
+            print("Jump Reset");
             jumpsRemaining = maxJumps;
-            if(isJumping)
-            {
-                print("Jump Reset");
-                isJumping = false;
-            }
         }
 
         if (isJumping)
@@ -400,7 +438,15 @@ public class PlayerController : MonoBehaviour
             if (!wantsJump && jumpTick >= minJumpTime)
             {
                 print("Jump Canceled");
-                isJumping = false;
+                if(desiredVelocity.y > 0.01f)
+                {
+                    desiredVelocity.y -= gravity * 1.0f * Time.fixedDeltaTime;
+                }
+                else
+                {
+                    isJumping = false;
+                }
+                return;
             }
             //End jump
             if (jumpTick >= maxJumpTime)
@@ -414,7 +460,7 @@ public class PlayerController : MonoBehaviour
         //Start jump
         if (CanJump() && !isJumping && wantsJump && !jumpPendingRelease && jumpsRemaining > 0)
         {
-            print("Jump Started");
+            print(string.Format("Jump Started ({0}/{1})", maxJumps - jumpsRemaining, maxJumps));
             jumpTick = 0;
             isJumping = true;
             jumpsRemaining--;
@@ -454,10 +500,6 @@ public class PlayerController : MonoBehaviour
         {
             float desiredSpeed = groundSpeed;
 
-#if DEBUG
-            if (Input.GetKey(KeyCode.LeftShift)) desiredSpeed *= 3.0f;
-#endif
-
             //use air speed when changing direction in the air
             if (!isGrounded && (hasMovedInAir || Mathf.Sign(desiredVelocity.x) != Mathf.Sign(xInput)))
             {
@@ -465,23 +507,31 @@ public class PlayerController : MonoBehaviour
                 hasMovedInAir = true;
             }
 
-            Vector2 desiredInputVelocity = new Vector2(xInput * desiredSpeed, isGrounded ? 0 : desiredVelocity.y);
+            foreach(var boost in speedBoosts.Values)
+            {
+                desiredSpeed *= boost;
+            }
+
+            Vector2 desiredInputVelocity = new Vector2(xInput * desiredSpeed, isGrounded && !isJumping ? 0 : desiredVelocity.y);
 
             var groundHit = grounder.GetGroundHit();
             float angleUp = groundHit ? Vector2.Angle(groundHit.normal, Vector2.up) : 0;
-            if (groundHit && angleUp > 1 && angleUp < 60  && xInput != 0 && !isJumping)
+            if (groundHit && angleUp > 1 && angleUp < maxFloorSlopeAngle && xInput != 0 && !isJumping)
             {
                 Vector2 tangent = Vector2.Perpendicular(groundHit.normal);
 
                 tangent = tangent.normalized * -xInput;
 
-                desiredInputVelocity = tangent * desiredSpeed;
+                desiredVelocity = tangent * desiredSpeed;
 
-                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.1f, float.MaxValue, Time.fixedDeltaTime);
+                //desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.1f, float.MaxValue, Time.fixedDeltaTime);
+
+                float py = groundHit.point.y - grounder.transform.localPosition.y;
+                transform.position = new Vector3(transform.position.x, py, transform.position.z);
             }
             else if (xInput != 0)
             {
-                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.2f, float.MaxValue, Time.fixedDeltaTime);
+                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, isGrounded ? 0.2f : 0.5f, float.MaxValue, Time.fixedDeltaTime);
             }
             else
             {
@@ -563,30 +613,42 @@ public class PlayerController : MonoBehaviour
 
     public virtual void OnDamage(Damage damage)
     {
+        if(pendingAttackDamage) //ignore damage
+        {
+            damage.consumed = true;
+            return;
+        }
+
         lastDamageTime = Time.time;
 
         if (damage.owner)
         {
             Vector2 knockback = (transform.position - damage.owner.transform.position).normalized;
             desiredVelocity.x = Mathf.Sign(knockback.x) * knockbackVector.x;
-            desiredVelocity.y = knockbackVector.y;
+            desiredVelocity.y = Mathf.Sign(knockback.y) * knockbackVector.y;
             rigidbody2D.velocity = desiredVelocity;
             StunFor(stunDuration);
         }
-        sleepTimer += 3.0f;
-        if (sleepTimer > timeToSleep)
-        {
-            damage.value = 0;
-        }
+        sleepTimer += 1.0f;
+        damage.value = 0; //skip applying health damage
+
         //animator.SetTrigger("onDamage");
     }
 
     void OnDeath()
     {
-        Sleep();
-
         //this.enabled = false;
         //FindObjectOfType<GameManager>().OnLoss("You Died.");
+    }
+
+    void OnAttackHit(Damage damage)
+    {
+        if(!grounder.isGrounded)
+        {
+            desiredVelocity.y = gravity * 0.02f;
+            desiredVelocity.x = 0;
+        }
+        desiredVelocity.x *= 0.5f;
     }
 
     void OnDeathAnimFinished()
@@ -621,12 +683,14 @@ public class PlayerController : MonoBehaviour
         foreach(var contact in collision.contacts)
         {
             float angle = Vector2.Angle(contact.normal, Vector2.up);
-            if (angle < 90) //we hit our head on something :(
+
+            if (angle > 180 - (90 - maxFloorSlopeAngle)) //touched ceiling
             {
-                isJumping = false;
+                //isJumping = false;
                 desiredVelocity.y = 0;
+                Debug.DrawLine(contact.point, contact.point + contact.normal * 1.0f, Color.yellow, 3.0f);
             }
-            else if(angle > 60)
+            else if(angle < maxFloorSlopeAngle) //touched "ground"
             {
                 desiredVelocity.y = 0;
             }

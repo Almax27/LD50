@@ -6,17 +6,10 @@ Handle slime anim getting knocked up (should be falling)
 
 Snore SFX
 
-Change player death SFX to not be the squelch (use actual death?)
-
 Perlin noise grass
-
-Set sleep timer to 0 on death
-
-Die quicker by spikes
 
 Align death effect with player after he falls over
 
-Reset slime jump timer on damage, and increase slime jump rate
 Add slime spike attack
 
 === Flying Enemy ideas ===

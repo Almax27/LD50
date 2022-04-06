@@ -112,8 +112,13 @@ public class Health : MonoBehaviour {
         currentHealth = Mathf.Max(currentHealth + value, maxHealth);
     }
 
-    public void Kill(bool silent = false)
+    public void Kill(bool silent = false, bool instant = false)
     {
+        if(instant)
+        {
+            destroyOnDeath = 0;
+        }
+
         if (silent)
         {
             currentHealth = 0;

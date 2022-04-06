@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Damage {
 
@@ -9,10 +9,14 @@ public class Damage {
         owner = sender;
         hitSFX = hitSFXSetup;
         knockback = knockbackVector;
+
+        hitObjects = new List<GameObject>();
     }
     public float value;
     public GameObject owner;
     public FAFAudioSFXSetup hitSFX;
     public Vector2 knockback;
     public bool consumed;
+
+    public List<GameObject> hitObjects { get; private set; }
 }

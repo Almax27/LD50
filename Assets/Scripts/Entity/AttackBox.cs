@@ -7,10 +7,11 @@ public class AttackBox : MonoBehaviour
     public Vector2 size = new Vector2(1,1);
     public LayerMask layerMask;
 
+    public float lastHitTime { get; private set; }
+
     void DealDamage_Internal(Damage damage)
     {
         Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, size, 0, layerMask);
-        List<GameObject> hitObjects = new List<GameObject>();
         if (colliders != null)
         {
             foreach (var collider in colliders)
@@ -18,17 +19,19 @@ public class AttackBox : MonoBehaviour
                 if (collider.gameObject == gameObject || collider.gameObject == damage.owner)
                     continue;
                     
-                if (!hitObjects.Contains(collider.gameObject))
+                if (!damage.hitObjects.Contains(collider.gameObject))
                 {
-                    hitObjects.Add(collider.gameObject);
+                    damage.hitObjects.Add(collider.gameObject);
                     collider.gameObject.SendMessageUpwards("OnDamage", damage);
                 }
             }
         }
 
-        if(hitObjects.Count > 0)
+        if(damage.hitObjects.Count > 0)
         {
             damage.hitSFX?.Play(transform.position);
+            lastHitTime = Time.time;
+            SendMessageUpwards("OnAttackHit", damage);
         }
     }
 
@@ -43,9 +46,11 @@ public class AttackBox : MonoBehaviour
         StartCoroutine(DealDamage_Routine(damage, delay));
     }
 
-    public bool IsTargetInRange()
+    public bool IsTargetInRange(Vector2 sizeAdjustment)
     {
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, size, 0, layerMask);
+        Vector2 adjustedSize = Vector2.Max(Vector2.zero, size + sizeAdjustment);
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, adjustedSize, 0, layerMask);
+        Debug.DrawLine(transform.position, (Vector2)transform.position + adjustedSize * 0.5f, Color.white, 3.0f);
         if (colliders != null)
         {
             foreach (var collider in colliders)
