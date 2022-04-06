@@ -261,7 +261,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleDebugInput()
     {
-        if(Input.GetKeyDown(KeyCode.KeypadPlus))
+        if(Input.GetKeyDown(KeyCode.T))
         {
             timeToSleep += 60;
         }
