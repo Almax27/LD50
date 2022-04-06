@@ -12,6 +12,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public PlayerController playerToSpawn;
 
     public PlayerController currentPlayer;
+    public LayerMask worldCollisionMask;
 
     public SuperTiled2Unity.SuperMap superMap { get; private set; }
 
@@ -36,7 +37,7 @@ public class GameManager : SingletonBehaviour<GameManager>
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        var playerGO = GameObject.Instantiate(playerToSpawn, playerSpawnPoint.position, playerSpawnPoint.rotation);
+        var playerGO = GameObject.Instantiate(playerToSpawn, GetPlayerSpawnLocation(), Quaternion.identity);
         currentPlayer = playerGO.GetComponent<PlayerController>();
 
         var followCamera = GetComponentInChildren<FollowCamera>();
@@ -60,6 +61,30 @@ public class GameManager : SingletonBehaviour<GameManager>
         }
     }
 
+    Vector3 GetPlayerSpawnLocation()
+    {
+        Vector2 loc = Vector2.zero;
+        if (playerSpawnPoint)
+        {
+            loc = playerSpawnPoint.position;
+        }
+        if (playerToSpawn)
+        {
+            var playerCapsule = playerToSpawn.GetComponent<CapsuleCollider2D>();
+            if(playerCapsule)
+            {
+                Vector2 checkDir = Vector2.down;
+                float checkDist = 2.0f;
+                var hit = Physics2D.CapsuleCast(loc, playerCapsule.size, playerCapsule.direction, 0, checkDir, checkDist);
+                if(hit)
+                {
+                    loc += checkDir * checkDist * hit.fraction;
+                }
+            }
+        }
+        return loc;
+    }
+
     public SuperTiled2Unity.SuperMap GetMap()
     {
         if (!superMap) superMap = FindObjectOfType<SuperTiled2Unity.SuperMap>();
@@ -69,6 +94,12 @@ public class GameManager : SingletonBehaviour<GameManager>
     public Vector2 GetMapSize()
     {
         return GetMap() ? new Vector2(GetMap().m_Width, GetMap().m_Height) : Vector2.zero;
+    }
+
+    public Rect GetMapBounds(Vector2 inset = default)
+    {
+        var mapSize = GetMapSize();
+        return new Rect(inset.x, inset.y - mapSize.y, mapSize.x - inset.x, mapSize.y - inset.y);
     }
 
     internal void OnLoss(string Message)
@@ -84,9 +115,14 @@ public class GameManager : SingletonBehaviour<GameManager>
             var levelEndTrigger = FindObjectOfType<LevelEndTrigger>();
             levelEndTrigger?.CompleteLevel();
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            //LevelTransition.Instance.TransitionToLevel(SceneManager.GetActiveScene().name);
+            if (currentPlayer) currentPlayer.transform.position = GetPlayerSpawnLocation();
+        }
 #endif
 
-        if(!isRestarting)
+        if (!isRestarting)
         {
             if(!currentPlayer || currentPlayer.GetComponent<Health>().GetIsDead())
             {
@@ -133,7 +169,7 @@ public class GameManager : SingletonBehaviour<GameManager>
             if(stimBar) stimBar.enabled = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Pause"))
         {
             isPaused = !isPaused;
             if (isPaused)

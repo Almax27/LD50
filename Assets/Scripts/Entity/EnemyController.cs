@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public Grounder grounder;
+    public Animator animator;
+    public new Rigidbody2D rigidbody2D;
+
     [Header("Knockback")]
     public float stunDuration;
     public Vector2 knockbackVector = new Vector2(7,5);
@@ -13,17 +17,11 @@ public class EnemyController : MonoBehaviour
 
     protected Vector2 desiredVelocity;
 
-
-    // Start is called before the first frame update
-    void Start()
+    protected virtual void Awake()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (!grounder) grounder = GetComponentInChildren<Grounder>();
+        if (!animator) animator = GetComponentInChildren<Animator>();
+        if (!rigidbody2D) rigidbody2D = GetComponentInChildren<Rigidbody2D>();
     }
 
     public void StunFor(float duration)
@@ -44,7 +42,10 @@ public class EnemyController : MonoBehaviour
         {
             Vector2 knockbackDir = (transform.position - damage.owner.transform.position).normalized;
             desiredVelocity.x = Mathf.Sign(knockbackDir.x) * damage.knockback.x;
-            desiredVelocity.y = damage.knockback.y;
+            if (grounder.IsGrounded(0))
+            {
+                desiredVelocity.y = damage.knockback.y;
+            }
             GetComponent<Rigidbody2D>().velocity = desiredVelocity;
             StunFor(stunDuration);
         }

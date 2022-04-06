@@ -3,37 +3,47 @@ using System.Collections;
 
 public class Grounder : MonoBehaviour {
 
-    public bool isGrounded = false;
     public LayerMask groundMask = new LayerMask();
 
     public Vector2 size = Vector2.one;
 
     public float groundedTick = 0.0f;
 
+    bool isGrounded = false;
+
+    private void Start()
+    {
+        UpdateGrounded();
+    }
+
     void FixedUpdate()
+    {
+        if(UpdateGrounded() && isGrounded)
+        {
+            SendMessageUpwards("OnGrounded", SendMessageOptions.DontRequireReceiver);
+        }
+        groundedTick += Time.fixedDeltaTime;
+    }
+
+    public bool IsGrounded(float grace = 0.1f)
+    {
+        return isGrounded && groundedTick > grace;
+    }
+
+    bool UpdateGrounded()
     {
         Vector2 pos2D = new Vector2(transform.position.x, transform.position.y);
         Vector3 wScale = transform.lossyScale;
-        var ground = Physics2D.OverlapArea(pos2D - (size*0.5f) * wScale.x, pos2D + (size*0.5f) * wScale.y, groundMask);
+        var ground = Physics2D.OverlapArea(pos2D - (size * 0.5f) * wScale.x, pos2D + (size * 0.5f) * wScale.y, groundMask);
         bool wasGrounded = isGrounded;
         bool newGrounded = ground != null && !ground.isTrigger && ground.gameObject != gameObject;
-        if(wasGrounded != newGrounded)
+        if (wasGrounded != newGrounded)
         {
-            if (newGrounded)
-            {
-                groundedTick = 0;
-                isGrounded = newGrounded;
-                SendMessageUpwards("OnGrounded", SendMessageOptions.DontRequireReceiver);
-            }
-            else
-            {
-                if(groundedTick > 0.1f) //grace period
-                {
-                    isGrounded = newGrounded; //left the ground
-                }
-            }
+            groundedTick = 0;
+            isGrounded = newGrounded;
+            return true;
         }
-        groundedTick += Time.fixedDeltaTime;
+        return false;
     }
 
     public RaycastHit2D GetGroundHit()

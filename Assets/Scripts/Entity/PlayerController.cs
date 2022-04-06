@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     public Grounder climbGrounder;
 
     [Header("Movement")]
+    public float gravity = 1;
     public float groundSpeed = 12.0f;
     public float airSpeed = 6.0f;
     public float idleSpeed = 1.0f;
@@ -48,11 +49,11 @@ public class PlayerController : MonoBehaviour
     public FAFAudioSFXSetup landAudio;
 
     [Header("Jumping")]
-    public float gravity = 1;
-    public AnimationCurve jumpCurve = new AnimationCurve();
-    public float jumpHeight = 1;
+    public int maxJumps = 1;
+    public float jumpHeight = 1;    
     public float minJumpTime = 0.1f;
     public float maxJumpTime = 0.3f;
+    public AnimationCurve jumpCurve = new AnimationCurve();
     public GameObject[] spawnOnJump = new GameObject[0];
 
     [Header("Climbing")]
@@ -88,7 +89,6 @@ public class PlayerController : MonoBehaviour
     float footstepDistTraveled = 0;
 
     int jumpsRemaining = 0;
-    int maxJumps = 1;
     bool isJumping = false;
     float jumpTick = 0;
 
@@ -189,16 +189,16 @@ public class PlayerController : MonoBehaviour
         bool isMoving = Mathf.Abs(rigidbody2D.velocity.x) > idleSpeed || isMovingAgainstVelocity;
 
         animator.SetFloat("moveSpeed", isMoving ? Mathf.Abs(rigidbody2D.velocity.x / groundSpeed) : 0);
-        animator.SetFloat("velocityY", desiredVelocity.y);
-        animator.SetBool("isIdle", xInput == 0 && grounder.isGrounded && !isMoving && !isAttacking);
+        animator.SetFloat("velocityY", rigidbody2D.velocity.y);
+        animator.SetBool("isIdle", xInput == 0 && grounder.IsGrounded() && !isMoving && !isAttacking);
         animator.SetBool("isAttacking", isAttacking);
         animator.SetBool("isSleeping", isSleeping);
     }
 
     void FixedUpdate()
     {
-        var isGrounded = grounder ? grounder.isGrounded : false;
-        var isClimbGrounded = climbGrounder ? climbGrounder.isGrounded : false;
+        var isPlayerGrounded = grounder ? grounder.IsGrounded() : false;
+        var isClimbGrounded = climbGrounder ? climbGrounder.IsGrounded() : false;
 
         bool airAttackHang = false;
         var currentAttack = GetCurrentAttack();
@@ -208,30 +208,30 @@ public class PlayerController : MonoBehaviour
         }
 
         //apply gravity
-        if (!isGrounded && !isClimbing && !isJumping)
+        if (!isPlayerGrounded && !isClimbing && !isJumping)
         {
             desiredVelocity.y -= gravity * Time.fixedDeltaTime * (airAttackHang ? 0.1f : 1.0f);
         }
 
-        capsuleCollider2D.sharedMaterial = isGrounded ? groundedPhysicsMaterial : airPhysicsMaterial;
+        capsuleCollider2D.sharedMaterial = isPlayerGrounded ? groundedPhysicsMaterial : airPhysicsMaterial;
 
-        HandleClimbing(isGrounded, isClimbGrounded);
-        HandleJumping(isGrounded);
-        HandleMovement(isGrounded);
+        HandleClimbing(isPlayerGrounded, isClimbGrounded);
+        HandleJumping(isPlayerGrounded);
+        HandleMovement(isPlayerGrounded);
 
         UpdateFacing();
 
         //update animator
         if (animator && animator.runtimeAnimatorController)
         {
-            animator.SetBool("isGrounded", grounder.isGrounded && grounder.groundedTick > 0.05f);
+            animator.SetBool("isGrounded", grounder.IsGrounded(0.05f));
             //animator.SetBool("isClimbing", isClimbing);
         }
 
         //move rigidbody
         rigidbody2D.isKinematic = isClimbing;
 
-        if (isGrounded)
+        if (isPlayerGrounded)
         {
             float deltaX = Mathf.Abs(rigidbody2D.position.x - lastPosition.x);
             footstepDistTraveled += deltaX;
@@ -254,6 +254,9 @@ public class PlayerController : MonoBehaviour
 
         desiredVelocity.y = Mathf.Max(desiredVelocity.y, -maxFallingSpeedY);
         rigidbody2D.velocity = desiredVelocity;
+
+        var mapBounds = GameManager.Instance.GetMapBounds();
+        rigidbody2D.position = Vector2.Min(Vector2.Max(rigidbody2D.position, mapBounds.min), mapBounds.max);
     }
 
     void HandleDebugInput()
@@ -338,9 +341,10 @@ public class PlayerController : MonoBehaviour
             if (meleeAttackBox && currentAttack != null)
             {
                 currentAttack.attackSound?.Play(transform.position);
+
                 meleeAttackBox.DealDamage(new Damage(currentAttack.damage, gameObject, currentAttack.hitSound, currentAttack.knockback), currentAttack.damageDelay);
 
-                if (grounder.isGrounded && !meleeAttackBox.IsTargetInRange(Vector2.one * -2.0f))
+                if (grounder.IsGrounded() && !meleeAttackBox.IsTargetInRange(Vector2.one * -2.0f))
                 {
                     desiredVelocity = new Vector2(isLookingRight ? Mathf.Max(desiredVelocity.x, currentAttack.playerSpeedX) : Mathf.Min(desiredVelocity.x, -currentAttack.playerSpeedX), desiredVelocity.y);
                 }
@@ -425,6 +429,9 @@ public class PlayerController : MonoBehaviour
 
     void HandleJumping(bool isGrounded)
     {
+        float lastJumpTick = jumpTick;
+        jumpTick = Mathf.Clamp(jumpTick + Time.fixedDeltaTime, 0, maxJumpTime);
+
         //Reset jump
         if (!isJumping && jumpsRemaining != maxJumps && (isGrounded || isClimbing))
         {
@@ -432,50 +439,53 @@ public class PlayerController : MonoBehaviour
             jumpsRemaining = maxJumps;
         }
 
-        if (isJumping)
-        {
-            //Cancel jump
-            if (!wantsJump && jumpTick >= minJumpTime)
-            {
-                print("Jump Canceled");
-                if(desiredVelocity.y > 0.01f)
-                {
-                    desiredVelocity.y -= gravity * 1.0f * Time.fixedDeltaTime;
-                }
-                else
-                {
-                    isJumping = false;
-                }
-                return;
-            }
-            //End jump
-            if (jumpTick >= maxJumpTime)
-            {
-                print("Jump Ended");
-                isJumping = false;
-                desiredVelocity.y = 0; //enforce jump height
-            }
-        }
-
         //Start jump
-        if (CanJump() && !isJumping && wantsJump && !jumpPendingRelease && jumpsRemaining > 0)
+        if (CanJump() && wantsJump && !jumpPendingRelease && jumpsRemaining > 0)
         {
             print(string.Format("Jump Started ({0}/{1})", maxJumps - jumpsRemaining, maxJumps));
             jumpTick = 0;
             isJumping = true;
             jumpsRemaining--;
             jumpPendingRelease = true; //latch the input
+
+            //Zero velocity if we're opposing it - this allows the player to make move accurate jumps
+            if (Mathf.Sign(xInput) != Mathf.Sign(desiredVelocity.x))
+            {
+                desiredVelocity.x = -desiredVelocity.x;
+            }
+
             OnJump();
         }
         
-        //Process jump
         if (isJumping)
         {
-            print("Jumping...");
-            float lastJumpTick = jumpTick;
-            jumpTick = Mathf.Clamp(jumpTick + Time.fixedDeltaTime, 0, maxJumpTime);
-            float deltaY = (jumpCurve.Evaluate(jumpTick / maxJumpTime) - jumpCurve.Evaluate(lastJumpTick / maxJumpTime)) * jumpHeight;
-            desiredVelocity.y = deltaY / Time.fixedDeltaTime;
+            //Cancel jump
+            if (!wantsJump && jumpTick >= minJumpTime)
+            {
+                if (desiredVelocity.y > 0.01f)
+                {
+                    desiredVelocity.y -= gravity * 3.0f * Time.fixedDeltaTime;
+                }
+                else
+                {
+                    print("Jump Canceled");
+                    isJumping = false;
+                }
+                return;
+            }
+            //End jump
+            else if (jumpTick >= maxJumpTime)
+            {
+                print("Jump Ended");
+                isJumping = false;
+                desiredVelocity.y = 0; //enforce jump height
+            }
+            //Do jump
+            else
+            {
+                float deltaY = (jumpCurve.Evaluate(jumpTick / maxJumpTime) - jumpCurve.Evaluate(lastJumpTick / maxJumpTime)) * jumpHeight;
+                desiredVelocity.y = deltaY / Time.fixedDeltaTime;
+            }
         }
     }
 
@@ -516,13 +526,13 @@ public class PlayerController : MonoBehaviour
 
             var groundHit = grounder.GetGroundHit();
             float angleUp = groundHit ? Vector2.Angle(groundHit.normal, Vector2.up) : 0;
-            if (groundHit && angleUp > 1 && angleUp < maxFloorSlopeAngle && xInput != 0 && !isJumping)
+            if (groundHit && angleUp < maxFloorSlopeAngle && xInput != 0 && !isJumping)
             {
                 Vector2 tangent = Vector2.Perpendicular(groundHit.normal);
 
-                tangent = tangent.normalized * -xInput;
+                desiredVelocity = -tangent.normalized * xInput * desiredSpeed;
 
-                desiredVelocity = tangent * desiredSpeed;
+                Debug.DrawLine(transform.position, (Vector2)transform.position - tangent * 2.0f * Mathf.Sign(xInput), Color.magenta);
 
                 //desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, 0.1f, float.MaxValue, Time.fixedDeltaTime);
 
@@ -531,7 +541,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (xInput != 0)
             {
-                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, isGrounded ? 0.2f : 0.5f, float.MaxValue, Time.fixedDeltaTime);
+                desiredVelocity = Vector2.SmoothDamp(desiredVelocity, desiredInputVelocity, ref acceleration, isGrounded ? 0.2f : 0.2f, float.MaxValue, Time.fixedDeltaTime);
             }
             else
             {
@@ -596,9 +606,12 @@ public class PlayerController : MonoBehaviour
 
     void OnGrounded()
     {
-        landAudio?.Play(transform.position);
-        desiredVelocity.y = 0;
-        rigidbody2D.velocity = desiredVelocity;
+        if (!isJumping)
+        {
+            landAudio?.Play(transform.position, Mathf.Abs(desiredVelocity.y / maxFallingSpeedY));
+            desiredVelocity.y = 0;
+            rigidbody2D.velocity = desiredVelocity;
+        }
     }
 
     public void StunFor(float duration)
@@ -643,7 +656,7 @@ public class PlayerController : MonoBehaviour
 
     void OnAttackHit(Damage damage)
     {
-        if(!grounder.isGrounded)
+        if(!grounder.IsGrounded())
         {
             desiredVelocity.y = gravity * 0.02f;
             desiredVelocity.x = 0;
@@ -689,10 +702,6 @@ public class PlayerController : MonoBehaviour
                 //isJumping = false;
                 desiredVelocity.y = 0;
                 Debug.DrawLine(contact.point, contact.point + contact.normal * 1.0f, Color.yellow, 3.0f);
-            }
-            else if(angle < maxFloorSlopeAngle) //touched "ground"
-            {
-                desiredVelocity.y = 0;
             }
         }
     }

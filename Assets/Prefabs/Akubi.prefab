@@ -252,8 +252,9 @@ MonoBehaviour:
   grounder: {fileID: 1877360471677491877}
   climber: {fileID: 0}
   climbGrounder: {fileID: 0}
+  gravity: 60
   groundSpeed: 10
-  airSpeed: 6
+  airSpeed: 10
   idleSpeed: 1
   climbingSpeed: 0.2
   maxFallingSpeedY: 30
@@ -265,7 +266,10 @@ MonoBehaviour:
   footStepAudio: {fileID: 11400000, guid: 7095dac937fbf4c4f9dfdc524ce3a39f, type: 2}
   jumpAudio: {fileID: 11400000, guid: eb78611996b4f2c40ae5c5b4e282257e, type: 2}
   landAudio: {fileID: 11400000, guid: 258c70e2aa448bd40bead4305d9712a1, type: 2}
-  gravity: 60
+  maxJumps: 1
+  jumpHeight: 4.6
+  minJumpTime: 0.1
+  maxJumpTime: 0.4
   jumpCurve:
     serializedVersion: 2
     m_Curve:
@@ -290,9 +294,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  jumpHeight: 4.3
-  minJumpTime: 0.1
-  maxJumpTime: 0.4
   spawnOnJump: []
   climbExitTime: 0.2
   meleeAttackBox: {fileID: 0}

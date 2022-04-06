@@ -21,9 +21,5 @@ Add slime spike attack
 if attack button is held while in air after first attack, do slam attack, bringing enemies down with youd
 
 === Bugs ===
-* Can pick up stims after falling asleep
 * Little black pixel on player
-* Player can sometimes bounce a little when landing
-* Camera behaves strangely on the left side of the map
-* Animation glitch when player falls asleep
 * Ordering issues between animated game sprites

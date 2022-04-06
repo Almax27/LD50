@@ -531,9 +531,12 @@ MonoBehaviour:
   playerSpawnPoint: {fileID: 0}
   playerToSpawn: {fileID: 3266665632560690862, guid: fac29d7c64955fd40b69154f4c925e69, type: 3}
   currentPlayer: {fileID: 0}
+  worldCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   gameMusic:
     clip: {fileID: 8300000, guid: 93736961ebfd9ca40b6a6cf2a28520c7, type: 3}
-    volume: 0.6
+    volume: 0.4
     loop: 1
     fadeIn: 1
     fadeOut: 1

@@ -16,7 +16,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 12122347c0159ff4d89f01329b6d6700, type: 3}
   - {fileID: 8300000, guid: d613490bfae25c7488ce09de908058ce, type: 3}
   MixerGroup: {fileID: 0}
-  Volume: 1
+  Volume: 0.675
   VolumeVariance: 0
   Pitch: 0.76
   PitchVariance: 0.1
