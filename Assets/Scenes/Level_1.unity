@@ -644,22 +644,6 @@ PrefabInstance:
       propertyPath: playerSpawnPoint
       value: 
       objectReference: {fileID: 118023359}
-    - target: {fileID: 860468184007708043, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
-      propertyPath: m_MatchWidthOrHeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 860468184007708043, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
-      propertyPath: m_ReferenceResolution.x
-      value: 640
-      objectReference: {fileID: 0}
-    - target: {fileID: 860468184007708043, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
-      propertyPath: m_ReferenceResolution.y
-      value: 360
-      objectReference: {fileID: 0}
-    - target: {fileID: 860468184007708043, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
-      propertyPath: m_ReferencePixelsPerUnit
-      value: 16
-      objectReference: {fileID: 0}
     - target: {fileID: 1252514155188352151, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: m_SizeDelta.x
       value: 198
@@ -688,6 +672,14 @@ PrefabInstance:
       propertyPath: pixelScale
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 6903982528953475583, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 22.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6903982528953475583, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -32.9
+      objectReference: {fileID: 0}
     - target: {fileID: 7511454769119142753, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: worldSize.x
       value: 210
@@ -697,12 +689,36 @@ PrefabInstance:
       value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7557961131497018683, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_ForceIntoRT
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7557961131497018683, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: orthographic size
       value: 11.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7557961131497018683, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_NormalizedViewPortRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7557961131497018683, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7557961131497018683, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7557961131497018683, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_NormalizedViewPortRect.height
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8584100992867065798, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754005375931197686, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8948665301871551923, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: m_RootOrder

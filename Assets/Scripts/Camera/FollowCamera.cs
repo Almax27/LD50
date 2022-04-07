@@ -21,8 +21,10 @@ public class FollowCamera : MonoBehaviour {
     float smoothTime = 0;
     float smoothTimeVel = 0;
 
+    public void SnapToTarget() { snap = true; }
+
     // Use this for initialization
-    void Start () 
+    void Awake () 
     {
         if (target)
         {
@@ -69,8 +71,8 @@ public class FollowCamera : MonoBehaviour {
         }
         else
         {
-            desiredPosition = transform.position;
-            snap = true;
+            //desiredPosition = transform.position;
+            //snap = true;
         }
 
         desiredPosition = Vector2.Min(Vector2.Max(desiredPosition, worldCameraBounds.min), worldCameraBounds.max);
@@ -94,10 +96,14 @@ public class FollowCamera : MonoBehaviour {
 
     void OnDrawGizmos()
     {
-        Vector2 mapSize = GameManager.Instance.GetMapSize();
+        if(!cam) cam = GetComponent<Camera>();
+
+        Vector2 viewSize = new Vector2(cam.orthographicSize * cam.aspect, cam.orthographicSize);
+        Rect worldCameraBounds = GameManager.Instance.GetMapBounds(viewSize);
+        //Vector2 mapSize = GameManager.Instance.GetMapSize();
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(new Vector2(mapSize.x * 0.5f, -mapSize.y * 0.5f), mapSize);
+        Gizmos.DrawWireCube(worldCameraBounds.center, worldCameraBounds.size);
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere((Vector3)desiredPosition - Vector3.forward, 0.4f);

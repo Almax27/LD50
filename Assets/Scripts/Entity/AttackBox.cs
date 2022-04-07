@@ -22,7 +22,7 @@ public class AttackBox : MonoBehaviour
                 if (!damage.hitObjects.Contains(collider.gameObject))
                 {
                     damage.hitObjects.Add(collider.gameObject);
-                    collider.gameObject.SendMessageUpwards("OnDamage", damage);
+                    collider.gameObject.SendMessageUpwards("OnDamage", damage, SendMessageOptions.DontRequireReceiver);
                 }
             }
         }
@@ -31,7 +31,7 @@ public class AttackBox : MonoBehaviour
         {
             damage.hitSFX?.Play(transform.position);
             lastHitTime = Time.time;
-            SendMessageUpwards("OnAttackHit", damage);
+            SendMessageUpwards("OnAttackHit", damage, SendMessageOptions.DontRequireReceiver);
         }
     }
 

@@ -946,6 +946,18 @@ PrefabInstance:
       propertyPath: playerSpawnPoint
       value: 
       objectReference: {fileID: 1125640120}
+    - target: {fileID: 4884301520648049284, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 23.400024
+      objectReference: {fileID: 0}
+    - target: {fileID: 7511454769119142753, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: screenContaintSize.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7511454769119142753, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
+      propertyPath: screenContaintSize.y
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8584100992867065798, guid: 69af212ccf404214990f37b98ebb022c, type: 3}
       propertyPath: m_Name
       value: GameManager

@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: SFX_Footstep
   m_EditorClassIdentifier: 
   Clips:
-  - {fileID: 8300000, guid: 4913891f8d53e9545b1286bc380de27f, type: 3}
-  - {fileID: 8300000, guid: 44c7073b3e707f74bb727b3c908df879, type: 3}
   - {fileID: 8300000, guid: 324c381f50eba6c4e8f15a2bc2ea3bbb, type: 3}
-  - {fileID: 8300000, guid: b5e5c7ca2d8828b4baaa25f9e1432b07, type: 3}
+  - {fileID: 8300000, guid: 44c7073b3e707f74bb727b3c908df879, type: 3}
+  varianceMode: 1
   MixerGroup: {fileID: 0}
   Volume: 0.1
   VolumeVariance: 0

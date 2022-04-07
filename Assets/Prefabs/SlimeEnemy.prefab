@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 18304079173644900}
   - component: {fileID: 2731326027487243740}
   - component: {fileID: 4127854195778320403}
-  - component: {fileID: 560130469609067494}
-  - component: {fileID: 4641300558766317570}
   - component: {fileID: 2512638870522390340}
   - component: {fileID: 4353335343267095255}
+  - component: {fileID: 560130469609067494}
+  - component: {fileID: 4641300558766317570}
   m_Layer: 6
   m_Name: SlimeEnemy
   m_TagString: Untagged
@@ -35,6 +35,7 @@ Transform:
   m_Children:
   - {fileID: 744815460654443297}
   - {fileID: 7209443795575175248}
+  - {fileID: 7375405897985688192}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -50,12 +51,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a51ce1d0af7b34045a9edd1315357c06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stunDuration: 0
-  knockbackVector: {x: 7, y: 5}
   grounder: {fileID: 800430545667622655}
   animator: {fileID: 5307036917570380418}
   rigidbody2D: {fileID: 0}
+  stunDuration: 0
+  knockbackVector: {x: 7, y: 5}
   jumpSpeed: 10
+  aggroRange: 10
+  spikeAttackDamage: 2
+  spikeAttackKnockback: {x: 8, y: 3}
 --- !u!114 &4127854195778320403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,6 +83,35 @@ MonoBehaviour:
   damageTintColor: {r: 1, g: 0, b: 0, a: 1}
   damageTintDuration: 0.2
   destroyOnDeath: 0.5
+--- !u!114 &2512638870522390340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651112605619280156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b270c521102101949a1be09e925f08e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 2
+  gracePeriod: 0.1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!114 &4353335343267095255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651112605619280156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b12154c0746cc7941acd980f37be0ca7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!70 &560130469609067494
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -116,33 +149,53 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &2512638870522390340
+--- !u!1 &3718610565210957573
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7375405897985688192}
+  - component: {fileID: 1900146233152213639}
+  m_Layer: 6
+  m_Name: SpikeAttackBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7375405897985688192
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3718610565210957573}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 18304079173644900}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1900146233152213639
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1651112605619280156}
+  m_GameObject: {fileID: 3718610565210957573}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b270c521102101949a1be09e925f08e0, type: 3}
+  m_Script: {fileID: 11500000, guid: ecc4532799359cd4380c898209f789a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: {x: 3.5, y: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 8
---- !u!114 &4353335343267095255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1651112605619280156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b12154c0746cc7941acd980f37be0ca7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5327475927307254177
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,7 +239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b8971dd364c6b429361a0e44f6a079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGrounded: 0
   groundMask:
     serializedVersion: 2
     m_Bits: 1
@@ -218,7 +270,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8060961116645339351}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.788, z: 0}
+  m_LocalPosition: {x: 0, y: -0.675, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 18304079173644900}

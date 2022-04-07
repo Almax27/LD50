@@ -14,7 +14,12 @@ public class LevelEndTrigger : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            CompleteLevel();
+            var player = collision.GetComponent<PlayerController>();
+            var playerHealth = collision.GetComponent<Health>();
+            if (player && !player.isSleeping && playerHealth && !playerHealth.GetIsDead())
+            {
+                CompleteLevel();
+            }
         }
     }
 
@@ -31,7 +36,7 @@ public class LevelEndTrigger : MonoBehaviour
             player.levelComplete = true;
         }
 
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(2.0f);
 
         LevelTransition.Instance.TransitionToLevel(targetLevel);
     }

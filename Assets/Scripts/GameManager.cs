@@ -25,7 +25,6 @@ public class GameManager : SingletonBehaviour<GameManager>
     bool isRestarting = false;
     public bool isPaused { get; private set; }
 
-    public Text stimText;
     public Image stimBar;
     public CanvasGroup pauseCanvasGroup;
 
@@ -44,6 +43,7 @@ public class GameManager : SingletonBehaviour<GameManager>
         if(followCamera)
         {
             followCamera.target = playerGO.transform;
+            followCamera.SnapToTarget();
         }
 
         if(gameMusic != null)
@@ -99,7 +99,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public Rect GetMapBounds(Vector2 inset = default)
     {
         var mapSize = GetMapSize();
-        return new Rect(inset.x, inset.y - mapSize.y, mapSize.x - inset.x, mapSize.y - inset.y);
+        return new Rect(inset.x, inset.y - mapSize.y, mapSize.x - inset.x * 2, mapSize.y - inset.y * 2);
     }
 
     internal void OnLoss(string Message)
@@ -134,11 +134,6 @@ public class GameManager : SingletonBehaviour<GameManager>
         if(currentPlayer)
         {
             var health = currentPlayer.GetComponent<Health>();
-            if (stimText)
-            {
-                stimText.enabled = false;
-                stimText.text = string.Format("{0}/{1} - {2:0.0}s", health.GetHealth(), health.maxHealth, currentPlayer.sleepTimer);
-            }
             if(stimBar)
             {
                 stimBar.enabled = true;
@@ -184,6 +179,11 @@ public class GameManager : SingletonBehaviour<GameManager>
                 Cursor.visible = false;
                 Time.timeScale = 1;
             }
+        }
+
+        if(isPaused && Input.GetKey(KeyCode.Q))
+        {
+            Application.Quit();
         }
 
         if(pauseCanvasGroup)

@@ -16,7 +16,7 @@ public class Grounder : MonoBehaviour {
         UpdateGrounded();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if(UpdateGrounded() && isGrounded)
         {
@@ -27,16 +27,16 @@ public class Grounder : MonoBehaviour {
 
     public bool IsGrounded(float grace = 0.1f)
     {
-        return isGrounded && groundedTick > grace;
+        return isGrounded && groundedTick >= grace;
     }
 
     bool UpdateGrounded()
     {
         Vector2 pos2D = new Vector2(transform.position.x, transform.position.y);
         Vector3 wScale = transform.lossyScale;
-        var ground = Physics2D.OverlapArea(pos2D - (size * 0.5f) * wScale.x, pos2D + (size * 0.5f) * wScale.y, groundMask);
+        var ground = GetGroundHit();
         bool wasGrounded = isGrounded;
-        bool newGrounded = ground != null && !ground.isTrigger && ground.gameObject != gameObject;
+        bool newGrounded = ground;
         if (wasGrounded != newGrounded)
         {
             groundedTick = 0;
@@ -48,7 +48,15 @@ public class Grounder : MonoBehaviour {
 
     public RaycastHit2D GetGroundHit()
     {
-        return Physics2D.BoxCast(transform.parent.position, size, 0, Vector2.down, Mathf.Abs(transform.localPosition.y), groundMask);
+        var hits = Physics2D.BoxCastAll(transform.parent.position, size, 0, Vector2.down, Mathf.Abs(transform.localPosition.y), groundMask);
+        foreach (var hit in hits)
+        {
+            if (hit && hit.collider && !hit.collider.isTrigger)
+            {
+                return hit;
+            }
+        }
+        return new RaycastHit2D();
     }
 
     void OnDrawGizmos()

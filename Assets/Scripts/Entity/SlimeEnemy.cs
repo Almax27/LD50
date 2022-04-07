@@ -8,71 +8,103 @@ public class SlimeEnemy : EnemyController
 
     public float aggroRange = 10;
 
-    float nextJumpTime;
+    public float spikeAttackDamage = 2.0f;
+    public Vector2 spikeAttackKnockback = new Vector2(8, 3);
 
-    bool pendingJump = false;
+    float nextActionTime;
+
+    SpriteRenderer sprite;
+    AttackBox attackBox;
+
+    Damage attackDamage;
 
     protected override void Awake()
     {
         base.Awake();
-        ResetJump();
+
+        sprite = GetComponentInChildren<SpriteRenderer>();
+        attackBox = GetComponentInChildren<AttackBox>();
+
+        ResetAction();
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         //isGrounded, onJump, velocityY
         if(animator)
         {
-            animator.SetBool("isGrounded", grounder.IsGrounded());
+            animator.SetBool("isGrounded", grounder.IsGrounded(0));
             animator.SetFloat("velocityY", rigidbody2D.velocity.y);
-        }
 
-        if(grounder.IsGrounded() && nextJumpTime > 0 && Time.time > nextJumpTime)
-        {
-            //print("AttemptJump");
-            nextJumpTime = 0;
-            animator.SetTrigger("onJump");
-        }
-
-        if(pendingJump)
-        {
-            pendingJump = false;
-
-            if (grounder.IsGrounded(0))
+            if (grounder.IsGrounded())
             {
-                Vector2 jumpDirection = new Vector2(0, 2);
-
-                var player = GameManager.Instance.currentPlayer;
-                if (player)
+                if (nextActionTime > 0 && Time.time > nextActionTime)
                 {
-                    Vector2 playerVector = player.transform.position - transform.position;
-                    if (playerVector.sqrMagnitude < aggroRange * aggroRange)
+                    //print("AttemptJump");
+                    nextActionTime = 0;
+                    if (Random.value > 0.5f)
                     {
-                        var hit = Physics2D.Raycast(transform.position, playerVector.normalized, aggroRange, grounder.groundMask);
-                        if (hit.transform == null)
-                        {
-                            jumpDirection.x = Mathf.Sign(player.transform.position.x - transform.position.x);
-                        }
+                        animator.SetTrigger("onJump");
+                    }
+                    else
+                    {
+                        animator.SetTrigger("onAttack");
                     }
                 }
-                rigidbody2D.velocity = jumpDirection.normalized * jumpSpeed;
+                //sprite.transform.rotation = Quaternion.identity;
             }
+            else
+            {
+                //sprite.transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle(rigidbody2D.velocity, Vector2.up));
+            }
+        }
 
-            ResetJump();
+        if (attackBox && attackDamage != null)
+        {
+            attackBox.DealDamage(attackDamage);
         }
     }
 
-    void ResetJump()
+    void ResetAction()
     {
-        nextJumpTime = Time.time + Random.Range(3, 5);
+        nextActionTime = Time.time + Random.Range(2, 4);
     }
 
-    //called by PreJump Animation State Behaviour
-    void OnPreJumpExit()
+    void DoJump()
     {
-       // print("OnPreJumpExit");
-        pendingJump = true;
+        if (grounder.IsGrounded(0))
+        {
+            Vector2 jumpDirection = new Vector2(0, 1);
+
+            var player = GameManager.Instance.currentPlayer;
+            if (player)
+            {
+                Vector2 playerVector = player.transform.position - transform.position;
+                if (playerVector.sqrMagnitude < aggroRange * aggroRange)
+                {
+                    var hit = Physics2D.Raycast(transform.position, playerVector.normalized, playerVector.magnitude, grounder.groundMask);
+                    if (hit.transform == null)
+                    {
+                        jumpDirection.x = Mathf.Sign(player.transform.position.x - transform.position.x);
+                    }
+                }
+            }
+            rigidbody2D.velocity = jumpDirection.normalized * jumpSpeed;
+        }
+
+        ResetAction();
+    }
+
+    void StartAttack()
+    {
+        attackDamage = new Damage(spikeAttackDamage, gameObject, null, spikeAttackKnockback);
+    }
+
+    void EndAttack()
+    {
+        attackDamage = null;
+        ResetAction();
     }
 
     void OnGrounded()
@@ -84,7 +116,12 @@ public class SlimeEnemy : EnemyController
     public override void OnDamage(Damage damage)
     {
         base.OnDamage(damage);
-        ResetJump();
+        ResetAction();
+    }
+
+    public void OnAttackHit(Damage damage)
+    {
+        rigidbody2D.velocity = -rigidbody2D.velocity;
     }
 
     private void OnDrawGizmosSelected()

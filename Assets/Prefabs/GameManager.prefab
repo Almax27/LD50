@@ -30,7 +30,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2888960461439122246}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -110,7 +110,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4884301520648049284}
-  - {fileID: 1252514155188352151}
   - {fileID: 2888960461439122246}
   m_Father: {fileID: 8948665301871551923}
   m_RootOrder: 1
@@ -132,7 +131,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -154,9 +153,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
+  m_ReferencePixelsPerUnit: 16
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 640, y: 360}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -193,7 +192,7 @@ GameObject:
   - component: {fileID: 8707818796030857360}
   - component: {fileID: 2206270824975182405}
   m_Layer: 0
-  m_Name: Image
+  m_Name: StimBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -216,7 +215,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 23.4}
-  m_SizeDelta: {x: 748.8, y: 10}
+  m_SizeDelta: {x: 580, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8707818796030857360
 CanvasRenderer:
@@ -265,7 +264,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6903982528953475583}
-  - component: {fileID: 7557961131497018683}
+  - component: {fileID: 5114528671010078696}
   - component: {fileID: 6053998953836533023}
   - component: {fileID: 7511454769119142753}
   m_Layer: 0
@@ -289,7 +288,7 @@ Transform:
   m_Father: {fileID: 8948665301871551923}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &7557961131497018683
+--- !u!20 &5114528671010078696
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -316,8 +315,8 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
-  m_Depth: -1
+  orthographic size: 11.25
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -357,7 +356,7 @@ MonoBehaviour:
   followDamp: 0.4
   offset: {x: 0, y: 3, z: -10}
   followGraceDistanceUp: 5
-  maxDistanceFromTarget: 5
+  screenContaintSize: {x: 10, y: 10}
 --- !u!1 &7003010026335596978
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,7 +387,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2888960461439122246}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -461,10 +460,11 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5182727136354416070}
   - {fileID: 84727753835135208}
+  - {fileID: 5182727136354416070}
+  - {fileID: 9131407359542997068}
   m_Father: {fileID: 5054147452893390402}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -542,10 +542,9 @@ MonoBehaviour:
     fadeOut: 1
     transitionMode: 1
   gameOverSFX: {fileID: 11400000, guid: 4406ae7cecb7268488a3b7da1f4cc740, type: 2}
-  stimText: {fileID: 8754005375931197686}
   stimBar: {fileID: 2206270824975182405}
   pauseCanvasGroup: {fileID: 1771396110383373560}
---- !u!1 &8867580311134634414
+--- !u!1 &9178944846278316374
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -553,50 +552,50 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1252514155188352151}
-  - component: {fileID: 8423752608855204254}
-  - component: {fileID: 8754005375931197686}
+  - component: {fileID: 9131407359542997068}
+  - component: {fileID: 1347431638290014734}
+  - component: {fileID: 3161274981720436543}
   m_Layer: 0
-  m_Name: Text
+  m_Name: QuitPrompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1252514155188352151
+--- !u!224 &9131407359542997068
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8867580311134634414}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 9178944846278316374}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 5054147452893390402}
-  m_RootOrder: 1
+  m_Father: {fileID: 2888960461439122246}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 71.4}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -38.8}
   m_SizeDelta: {x: 694.4, y: 41.080017}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &8423752608855204254
+--- !u!222 &1347431638290014734
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8867580311134634414}
+  m_GameObject: {fileID: 9178944846278316374}
   m_CullTransparentMesh: 1
---- !u!114 &8754005375931197686
+--- !u!114 &3161274981720436543
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8867580311134634414}
+  m_GameObject: {fileID: 9178944846278316374}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
@@ -611,11 +610,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 43
+    m_Font: {fileID: 12800000, guid: e59657e62cb52e4488e6a6853e824c83, type: 3}
+    m_FontSize: 15
     m_FontStyle: 0
-    m_BestFit: 1
-    m_MinSize: 10
+    m_BestFit: 0
+    m_MinSize: 2
     m_MaxSize: 131
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -623,4 +622,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: press q to quit
