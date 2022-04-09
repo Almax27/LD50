@@ -1,0 +1,29 @@
+fileFormatVersion: 2
+guid: b7b1fdb9e0eb8d0439e2eafe5b078619
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 1fa25d03934ea624a82bf2fcee6f0873, type: 3}
+  missingFiles: []
+  errors: []
+  warnings:
+  - Pixels Per Unit mismatch between map (100) and tileset 'Tiletsets/akubi_tileset_1.tsx'
+    (16)
+  - Pixels Per Unit mismatch between map (100) and tileset 'Tiletsets/akubi_tileset_animated.tsx'
+    (16)
+  missingSortingLayers: []
+  missingLayers: []
+  missingTags: []
+  importerVersion: 24
+  pixelsPerUnit: 100
+  edgesPerEllipse: 32
+  numberOfObjectsImported: 2
+  tilesAsObjects: 0
+  sortingMode: 0
+  isIsometric: 0
+  customImporterClassName: 
+  internalTilesets: []
