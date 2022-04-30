@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 58dcd980dd19bb042857699351e5d8b1
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: b1577cdc41d01fa4dbf68ad51122a765, type: 3}
+  pixelsPerUnit: 100
+  meshType: 1
+  meshExtrude: 0
+  spriteAtlas: {instanceID: 0}
+  frameRate: 60
+  instantiatedPrefab: {instanceID: 0}
+  sortingLayerName: 
+  sortingOrder: 0
+  animatorCullingMode: 0
+  animatorController: {instanceID: 0}
+  errors: []

@@ -456,7 +456,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relativeCamera: {fileID: 0}
   parallaxScale: {x: 0.3, y: 0.9}
-  relativePosition: {x: 0.5, y: 0.41}
+  relativePosition: {x: 0.5, y: 0.35}
   tileSpacing: {x: 0, y: 0}
   sprite: {fileID: 21300000, guid: 7f5fd1b8e23c19e488bf2d7b0bfc2d40, type: 3}
   spriteSortOrder: -1
@@ -1064,7 +1064,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relativeCamera: {fileID: 0}
   parallaxScale: {x: 0.51, y: 0.95}
-  relativePosition: {x: 0.5, y: 0.46}
+  relativePosition: {x: 0.5, y: 0.45}
   tileSpacing: {x: 0, y: 0}
   sprite: {fileID: 21300000, guid: e12e95a4c9bf1324381b98f750882eb6, type: 3}
   spriteSortOrder: -2
